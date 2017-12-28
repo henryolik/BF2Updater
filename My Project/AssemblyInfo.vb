@@ -9,10 +9,10 @@ Imports System.Runtime.InteropServices
 ' Review the values of the assembly attributes
 
 <Assembly: AssemblyTitle("BF2Updater")> 
-<Assembly: AssemblyDescription("")> 
+<Assembly: AssemblyDescription("Updater and tools installer for Battlefield 2")> 
 <Assembly: AssemblyCompany("")> 
 <Assembly: AssemblyProduct("BF2Updater")> 
-<Assembly: AssemblyCopyright("Copyright ©  2017")> 
+<Assembly: AssemblyCopyright("© henryolik 2017")> 
 <Assembly: AssemblyTrademark("")> 
 
 <Assembly: ComVisible(False)>
