@@ -18,26 +18,10 @@ Public Class main
             Dim folder As String
             regkey = Registry.LocalMachine.OpenSubKey("SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{04858915-9F49-4B2A-AED4-DC49A7DE6A7B}", True)
             folder = regkey.GetValue("InstallLocation")
-            If Directory.Exists(folder) = False Then
-                MsgBox("BF2 installation was detected, but folder doesn't exist. Install it, please, from the CD via installator or from https://bf2.ministudios.ml.")
-                tb_loc.Text = "NOT DETECTED"
-                clb_updates.Items.Remove("Patch 1.41")
-                clb_updates.Items.Remove("Patch 1.50")
-                clb_updates.Items.Remove("BF2hub")
-                clb_updates.Items.Remove("Alt+Tab Fix")
-                clb_updates.Items.Insert(0, ".")
-                clb_updates.Items.Insert(0, ".")
-                clb_updates.Items.Insert(0, ".")
-                clb_updates.Items.Insert(0, ".")
-                la_141.Hide()
-                la_150.Hide()
-                la_bf2hub.Hide()
-                la_atf.Hide()
-            End If
+            tb_loc.Text = folder
             If My.Computer.FileSystem.DirectoryExists(tb_loc.Text) = False Then
                 MsgBox("Installation folder was not found! Install the game from DVD or from https://bf2.ministudios.ml")
             End If
-            tb_loc.Text = folder
         Catch ex As Exception
             MsgBox(ex.ToString & " BF2 installation was not detected. Install it, please, from the CD via installator or from https://bf2.ministudios.ml.")
             tb_loc.Text = "NOT DETECTED"
@@ -55,23 +39,19 @@ Public Class main
         If ver = "4.09.00.0904" Then
             la_dx.Text = "INSTALLED!"
             la_dx.ForeColor = Color.Green
-        Else
-            clb_updates.SetItemCheckState(5, CheckState.Checked)
         End If
         'Check for BF2 version
         Dim bf2exe_sha1 As String = getfilesha1(tb_loc.Text & "/BF2.exe")
         If bf2exe_sha1 = "aa5d39541c6dcda42f766eefead02ebbbcb10525" Then
-            bf2ver = "1.50 BF2hub"
+            bf2ver = "1.50 BF2Hub"
             la_11.Text = "INSTALLED!"
             la_11.ForeColor = Color.Green
             la_141.Text = "INSTALLED!"
             la_141.ForeColor = Color.Green
             la_150.Text = "INSTALLED!"
             la_150.ForeColor = Color.Green
-            If My.Computer.FileSystem.FileExists("C:\Program Files (x86)\BF2Hub Client\bf2hub.exe") Then
                 la_bf2hub.Text = "INSTALLED!"
                 la_bf2hub.ForeColor = Color.Green
-            End If
         End If
         If bf2exe_sha1 = "3681849f05f6963223c74d98066fbbc9b8520a15" Then
             bf2ver = "1.50"
@@ -81,66 +61,47 @@ Public Class main
             la_141.ForeColor = Color.Green
             la_150.Text = "INSTALLED!"
             la_150.ForeColor = Color.Green
-            clb_updates.SetItemCheckState(3, CheckState.Checked)
         End If
         If bf2exe_sha1 = "c3bd54bbf23a3b727ae245b14784e3dbd78c525f" Then
             bf2ver = "1.0/1.01"
-            clb_updates.SetItemCheckState(1, CheckState.Checked)
-            clb_updates.SetItemCheckState(2, CheckState.Checked)
         End If
         If bf2exe_sha1 = "72515c2641ea4e241b252eefd9fbaee0f33cbb38" Then
             bf2ver = "1.03"
-            clb_updates.SetItemCheckState(1, CheckState.Checked)
-            clb_updates.SetItemCheckState(2, CheckState.Checked)
         End If
         If bf2exe_sha1 = "30a0071d82a42c2d7e908069b58dbc40d7f1699b" Then
             bf2ver = "1.1"
             la_11.Text = "INSTALLED!"
             la_11.ForeColor = Color.Green
-            clb_updates.SetItemCheckState(1, CheckState.Checked)
-            clb_updates.SetItemCheckState(2, CheckState.Checked)
         End If
         If bf2exe_sha1 = "0ba2bcef97513a1cc770f8bd383e198c43612642" Then
             bf2ver = "1.12"
             la_11.Text = "INSTALLED!"
             la_11.ForeColor = Color.Green
-            clb_updates.SetItemCheckState(1, CheckState.Checked)
-            clb_updates.SetItemCheckState(2, CheckState.Checked)
         End If
         If bf2exe_sha1 = "243527754c7aa03bb5af43c6308ab89753ce510f" Then
             bf2ver = "1.2"
             la_11.Text = "INSTALLED!"
             la_11.ForeColor = Color.Green
-            clb_updates.SetItemCheckState(1, CheckState.Checked)
-            clb_updates.SetItemCheckState(2, CheckState.Checked)
         End If
         If bf2exe_sha1 = "8afa4a0febfcf2b9a4aa6177fa51c33902ec4f6d" Then
             bf2ver = "1.21"
             la_11.Text = "INSTALLED!"
             la_11.ForeColor = Color.Green
-            clb_updates.SetItemCheckState(1, CheckState.Checked)
-            clb_updates.SetItemCheckState(2, CheckState.Checked)
         End If
         If bf2exe_sha1 = "786b41c4660b62fd42fe9935a12fe815dd23a80b" Then
             bf2ver = "1.22"
             la_11.Text = "INSTALLED!"
             la_11.ForeColor = Color.Green
-            clb_updates.SetItemCheckState(1, CheckState.Checked)
-            clb_updates.SetItemCheckState(2, CheckState.Checked)
         End If
         If bf2exe_sha1 = "6197bfc5310b86bbf0ecffb96e308cadf9fa52f0" Then
             bf2ver = "1.3"
             la_11.Text = "INSTALLED!"
             la_11.ForeColor = Color.Green
-            clb_updates.SetItemCheckState(1, CheckState.Checked)
-            clb_updates.SetItemCheckState(2, CheckState.Checked)
         End If
         If bf2exe_sha1 = "6c2224b348b90710624607c24af7aa78f2204536" Then
             bf2ver = "1.4"
             la_11.Text = "INSTALLED!"
             la_11.ForeColor = Color.Green
-            clb_updates.SetItemCheckState(1, CheckState.Checked)
-            clb_updates.SetItemCheckState(2, CheckState.Checked)
         End If
         If bf2exe_sha1 = "85b27c0ee23cc3a1a67e1c2fe66ff4049e40fa42" Then
             bf2ver = "1.41"
@@ -148,7 +109,6 @@ Public Class main
             la_11.ForeColor = Color.Green
             la_141.Text = "INSTALLED!"
             la_141.ForeColor = Color.Green
-            clb_updates.SetItemCheckState(2, CheckState.Checked)
         End If
         la_version.Text = "Detected BF2 version: " & bf2ver
         'Check for Alt+Tab fix
@@ -156,8 +116,6 @@ Public Class main
         If alttab_sha1 = "5f92d7dfdf36ba3b1f5feab7228a90c4fc331764" Then
             la_atf.Text = "INSTALLED!"
             la_atf.ForeColor = Color.Green
-        Else
-            clb_updates.SetItemCheckState(4, CheckState.Checked)
         End If
         'Check if PunkBuster is running
         For Each s As ServiceController In ServiceController.GetServices()
@@ -165,8 +123,6 @@ Public Class main
                 If s.Status = ServiceControllerStatus.Running Then
                     la_pb.Text = "RUNNING"
                     la_pb.ForeColor = Color.Green
-                Else
-                    clb_updates.SetItemCheckState(6, CheckState.Checked)
                 End If
             End If
         Next
@@ -224,7 +180,7 @@ Public Class main
         SW = Stopwatch.StartNew
         Dim client As WebClient = New WebClient
         AddHandler client.DownloadProgressChanged, AddressOf download_change
-        AddHandler client.DownloadFileCompleted, AddressOf client_DownloadCompleted
+        AddHandler client.DownloadFileCompleted, AddressOf download_completed
         If My.Computer.FileSystem.DirectoryExists(Application.StartupPath & "/dl") = False Then
             My.Computer.FileSystem.CreateDirectory(Application.StartupPath & "/dl")
         End If
@@ -266,6 +222,8 @@ Public Class main
         Else
             unitb = " MB"
         End If
+        mbytesIn = Math.Round(mbytesIn, 1)
+        totalmBytes = Math.Round(totalmBytes, 2)
         la_size.Text = mbytesIn & unitb & " / " & totalmBytes & unita
         Dim speed As Double = e.BytesReceived / SW.ElapsedMilliseconds / 1000
         Dim unit As String
@@ -283,10 +241,16 @@ Public Class main
         la_speed.Text = "Download speed: " & speed & unit
     End Sub
 
-    Private Sub client_DownloadCompleted(ByVal sender As Object, ByVal e As System.ComponentModel.AsyncCompletedEventArgs)
-        dl = True
-        SW.Stop()
-        predl()
+    Private Sub download_completed(ByVal sender As Object, ByVal e As System.ComponentModel.AsyncCompletedEventArgs)
+        If Not e.Error Is Nothing Then
+            MessageBox.Show("There was an error downloading the file. Error: " & e.Error.Message)
+            SW.Stop()
+            predl()
+        Else
+            dl = True
+            SW.Stop()
+            predl()
+        End If
     End Sub
 
     Private Sub install()
@@ -311,16 +275,10 @@ Public Class main
         If My.Settings.patch150 = True Then
             la_dl.Text = "Patch 1.50"
             pb_load.Value = 50
-            If bf2ver = "1.41" Then
                 Process.Start(Application.StartupPath & "/dl/bf2patch_1.50.exe").WaitForExit(3600000)
                 My.Settings.patch150 = False
                 pb_load.Value = 100
-            Else
-                MsgBox("Patch 1.41 is required to install patch 1.50")
-                My.Settings.patch150 = False
-                pb_load.Value = 100
             End If
-        End If
         If My.Settings.bf2hub = True Then
             la_dl.Text = "BF2Hub"
             pb_load.Value = 50
@@ -346,7 +304,6 @@ Public Class main
             la_dl.Text = "DirectX 9.0c"
             pb_load.Value = 50
             Process.Start(Application.StartupPath & "/dl/dxsetup.exe").WaitForExit(3600000)
-            Threading.Thread.Sleep(1000)
             My.Settings.dx = False
             pb_load.Value = 100
         End If
@@ -354,7 +311,6 @@ Public Class main
             la_dl.Text = "PunkBuster"
             pb_load.Value = 50
             Process.Start(Application.StartupPath & "/dl/pbsvc.exe").WaitForExit(3600000)
-            Threading.Thread.Sleep(1000)
             My.Settings.pb = False
             pb_load.Value = 100
         End If

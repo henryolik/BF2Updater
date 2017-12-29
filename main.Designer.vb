@@ -256,7 +256,7 @@ Partial Class main
         Me.Controls.Add(Me.MenuStrip1)
         Me.MainMenuStrip = Me.MenuStrip1
         Me.Name = "main"
-        Me.Text = "BF2Updater v1.0"
+        Me.Text = "BF2Updater v1.0.1"
         Me.MenuStrip1.ResumeLayout(False)
         Me.MenuStrip1.PerformLayout()
         Me.ResumeLayout(False)
