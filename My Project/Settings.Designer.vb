@@ -137,6 +137,42 @@ Namespace My
                 Me("pb") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("False")>  _
+        Public Property patch150_2() As Boolean
+            Get
+                Return CType(Me("patch150_2"),Boolean)
+            End Get
+            Set
+                Me("patch150_2") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("False")>  _
+        Public Property patch150_3() As Boolean
+            Get
+                Return CType(Me("patch150_3"),Boolean)
+            End Get
+            Set
+                Me("patch150_3") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("False")>  _
+        Public Property patch150_4() As Boolean
+            Get
+                Return CType(Me("patch150_4"),Boolean)
+            End Get
+            Set
+                Me("patch150_4") = value
+            End Set
+        End Property
     End Class
 End Namespace
 
