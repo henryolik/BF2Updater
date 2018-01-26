@@ -22,6 +22,7 @@ Partial Class main
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(main))
         Me.tb_loc = New System.Windows.Forms.TextBox()
         Me.MenuStrip1 = New System.Windows.Forms.MenuStrip()
         Me.mi_about = New System.Windows.Forms.ToolStripMenuItem()
@@ -254,9 +255,10 @@ Partial Class main
         Me.Controls.Add(Me.la_loc)
         Me.Controls.Add(Me.tb_loc)
         Me.Controls.Add(Me.MenuStrip1)
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MainMenuStrip = Me.MenuStrip1
         Me.Name = "main"
-        Me.Text = "BF2Updater v1.0.2"
+        Me.Text = "BF2Updater v1.0.3"
         Me.MenuStrip1.ResumeLayout(False)
         Me.MenuStrip1.PerformLayout()
         Me.ResumeLayout(False)

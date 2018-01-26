@@ -12,7 +12,7 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyDescription("Updater and tools installer for Battlefield 2")> 
 <Assembly: AssemblyCompany("")> 
 <Assembly: AssemblyProduct("BF2Updater")> 
-<Assembly: AssemblyCopyright("© henryolik 2017")> 
+<Assembly: AssemblyCopyright("© henryolik 2017 - 18")> 
 <Assembly: AssemblyTrademark("")> 
 
 <Assembly: ComVisible(False)>
@@ -31,5 +31,5 @@ Imports System.Runtime.InteropServices
 ' by using the '*' as shown below:
 ' <Assembly: AssemblyVersion("1.0.*")> 
 
-<Assembly: AssemblyVersion("1.0.2.0")> 
-<Assembly: AssemblyFileVersion("1.0.2.0")> 
+<Assembly: AssemblyVersion("1.0.3.0")> 
+<Assembly: AssemblyFileVersion("1.0.3.0")> 

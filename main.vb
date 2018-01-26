@@ -495,8 +495,11 @@ Public Class main
     End Sub
 
     Public Sub CheckForUpdates()
-        Dim version As String = Application.StartupPath & "/version.txt"
-        Dim updater As String = Application.StartupPath & "/updater.exe"
+        If Directory.Exists(IO.Path.GetTempPath & "/BF2Updater") = False Then
+            Directory.CreateDirectory(IO.Path.GetTempPath & "/BF2Updater")
+        End If
+        Dim version As String = IO.Path.GetTempPath & "/BF2Updater" & "/version.txt"
+        Dim updater As String = IO.Path.GetTempPath & "/BF2Updater" & "/updater.exe"
         Dim MyVer As String = My.Application.Info.Version.ToString
         If My.Computer.FileSystem.FileExists(version) Then
             My.Computer.FileSystem.DeleteFile(version)
@@ -515,7 +518,7 @@ Public Class main
                 If IsConnectionAvailable() = True Then
                     wc.DownloadFile("https://dl.ministudios.ml/updater/updater.exe", updater)
                 End If
-                Process.Start(Application.StartupPath & "/updater.exe", "-bf2")
+                Process.Start(updater, "-bf2 -e:" & Application.ExecutablePath)
                 Me.Close()
             End If
         End If
