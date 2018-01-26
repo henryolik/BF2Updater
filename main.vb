@@ -236,7 +236,7 @@ Public Class main
         Else
             unitb = " MB"
         End If
-        mbytesIn = Math.Round(mbytesIn, 1)
+        mbytesIn = Math.Round(mbytesIn, 2)
         totalmBytes = Math.Round(totalmBytes, 2)
         la_size.Text = mbytesIn & unitb & " / " & totalmBytes & unita
         Dim speed As Double = e.BytesReceived / SW.ElapsedMilliseconds / 1000
@@ -257,9 +257,12 @@ Public Class main
 
     Private Sub download_completed(ByVal sender As Object, ByVal e As System.ComponentModel.AsyncCompletedEventArgs)
         If Not e.Error Is Nothing Then
-            MessageBox.Show("There was an error downloading the file. Error: " & e.Error.Message)
-            SW.Stop()
-            predl()
+            Dim actualException = e.Error
+            While actualException.InnerException IsNot Nothing
+                actualException = actualException.InnerException
+            End While
+
+            MessageBox.Show("There was an error downloading the file. Error: " & actualException.Message)
         Else
             dl = True
             SW.Stop()
@@ -341,68 +344,45 @@ Public Class main
             disable()
             la_dl.Text = "Checking for files..."
             dl = False
-            If File.Exists(Application.StartupPath & "/dl/FFSJ.exe") = False Then
-                download("Libraries", "https://dl.ministudios.ml/bf2/updater/FFSJ.exe", "FFSJ.exe")
+            If clb_updates.CheckedItems.Contains("Patch 1.1") Then
+                My.Settings.patch11 = True
+                If File.Exists(Application.StartupPath & "/dl/bf2patch_1.1.exe") Then
+                    If getfilesha1(Application.StartupPath & "/dl/bf2patch_1.1.exe") = "f30c27ff0f1398c11c0065d415eb79c6def1ea2d" = False Then
+                        download("Patch 1.1", "https://dl.ministudios.ml/bf2/patches/bf2patch_1.1.exe", "bf2patch_1.1.exe")
+                    Else
+                        clb_updates.Items.RemoveAt(0)
+                        clb_updates.Items.Insert(0, "Patch 1.1")
+                        dl = True
+                        predl()
+                    End If
+                Else
+                    download("Patch 1.1", "https://dl.ministudios.ml/bf2/patches/bf2patch_1.1.exe", "bf2patch_1.1.exe")
+                End If
+                clb_updates.Items.RemoveAt(0)
+                clb_updates.Items.Insert(0, "Patch 1.1")
             Else
-                If clb_updates.CheckedItems.Contains("Patch 1.1") Then
-                    My.Settings.patch11 = True
-                    If File.Exists(Application.StartupPath & "/dl/bf2patch_1.1.exe") Then
-                        If getfilesha1(Application.StartupPath & "/dl/bf2patch_1.1.exe") = "f30c27ff0f1398c11c0065d415eb79c6def1ea2d" = False Then
-                            download("Patch 1.1", "https://dl.ministudios.ml/bf2/patches/bf2patch_1.1.exe", "bf2patch_1.1.exe")
+                If clb_updates.CheckedItems.Contains("Patch 1.41") Then
+                    My.Settings.patch141 = True
+                    If File.Exists(Application.StartupPath & "/dl/bf2patch_1.41.exe") Then
+                        If getfilesha1(Application.StartupPath & "/dl/bf2patch_1.41.exe") = "4956f67dbe8873d20f40f87e051f08170420e164" = False Then
+                            download("Patch 1.41", "https://dl.ministudios.ml/bf2/patches/bf2patch_1.41.exe", "bf2patch_1.41.exe")
                         Else
-                            clb_updates.Items.RemoveAt(0)
-                            clb_updates.Items.Insert(0, "Patch 1.1")
+                            clb_updates.Items.RemoveAt(1)
+                            clb_updates.Items.Insert(1, "Patch 1.41")
                             dl = True
                             predl()
                         End If
                     Else
-                        download("Patch 1.1", "https://dl.ministudios.ml/bf2/patches/bf2patch_1.1.exe", "bf2patch_1.1.exe")
+                        download("Patch 1.41", "https://dl.ministudios.ml/bf2/patches/bf2patch_1.41.exe", "bf2patch_1.41.exe")
                     End If
-                    clb_updates.Items.RemoveAt(0)
-                    clb_updates.Items.Insert(0, "Patch 1.1")
+                    clb_updates.Items.RemoveAt(1)
+                    clb_updates.Items.Insert(1, "Patch 1.41")
                 Else
-                    If clb_updates.CheckedItems.Contains("Patch 1.41") Then
-                        My.Settings.patch141 = True
-                        If File.Exists(Application.StartupPath & "/dl/bf2patch_1.41.exe") Then
-                            If getfilesha1(Application.StartupPath & "/dl/bf2patch_1.41.exe") = "4956f67dbe8873d20f40f87e051f08170420e164" = False Then
-                                download("Patch 1.41", "https://dl.ministudios.ml/bf2/patches/bf2patch_1.41.exe", "bf2patch_1.41.exe")
-                            Else
-                                clb_updates.Items.RemoveAt(1)
-                                clb_updates.Items.Insert(1, "Patch 1.41")
-                                dl = True
-                                predl()
-                            End If
-                        Else
-                            download("Patch 1.41", "https://dl.ministudios.ml/bf2/patches/bf2patch_1.41.exe", "bf2patch_1.41.exe")
-                        End If
-                        clb_updates.Items.RemoveAt(1)
-                        clb_updates.Items.Insert(1, "Patch 1.41")
-                    Else
-                        If clb_updates.CheckedItems.Contains("Patch 1.50") Then
-                            My.Settings.patch150 = True
+                    If clb_updates.CheckedItems.Contains("Patch 1.50") Then
+                        My.Settings.patch150 = True
+                        If File.Exists(Application.StartupPath & "/dl/bf2patch_1.50.exe") Then
                             If getfilesha1(Application.StartupPath & "/dl/bf2patch_1.50.exe") = "578e66b5695723ce375f52bef780d853220734cc" = False Then
-                                If My.Settings.patch150_2 = False And My.Settings.patch150_3 = False And getfilesha1(Application.StartupPath & "/dl/bf2patch_1.50.exe.001") = "f23041bf42f4b8b1f0bb1af48424fb9f7dca96e4" = False Then
-                                    download("Patch 1.50, part 1/3", "https://dl.ministudios.ml/bf2/patches/bf2patch_1.50_parts/bf2patch_1.50.exe.001", "bf2patch_1.50.exe.001")
-                                    My.Settings.patch150_2 = True
-                                Else
-                                    My.Settings.patch150_2 = True
-                                    If My.Settings.patch150_2 = True And My.Settings.patch150_3 = False And getfilesha1(Application.StartupPath & "/dl/bf2patch_1.50.exe.002") = "55c4f571276fd784703a02f3fd1055f2704e8de7" = False Then
-                                        download("Patch 1.50, part 2/3", "https://dl.ministudios.ml/bf2/patches/bf2patch_1.50_parts/bf2patch_1.50.exe.002", "bf2patch_1.50.exe.002")
-                                        My.Settings.patch150_3 = True
-                                    Else
-                                        My.Settings.patch150_3 = True
-                                        If My.Settings.patch150_2 = True And My.Settings.patch150_3 = True And getfilesha1(Application.StartupPath & "/dl/bf2patch_1.50.exe.003") = "e4bab6f15f052112bade19a2503f876977e489bc" = False Then
-                                            download("Patch 1.50, part 3/3", "https://dl.ministudios.ml/bf2/patches/bf2patch_1.50_parts/bf2patch_1.50.exe.003", "bf2patch_1.50.exe.003")
-                                        Else
-                                            My.Settings.patch150_4 = True
-                                            If My.Settings.patch150_4 = True Then
-                                                la_dl.Text = "Patch 1.50"
-                                                Process.Start(Application.StartupPath & "/dl/FFSJ.exe", """-Task=Join"" ""-Input=" & Application.StartupPath & "/dl/bf2patch_1.50.exe.001"" -DeleteInput -Hide").WaitForExit(3600000)
-                                                predl()
-                                            End If
-                                        End If
-                                    End If
-                                End If
+                                download("Patch 1.50", "https://dl.ministudios.ml/bf2/patches/bf2patch_1.50.exe", "bf2patch_1.50.exe")
                             Else
                                 clb_updates.Items.RemoveAt(2)
                                 clb_updates.Items.Insert(2, "Patch 1.50")
@@ -410,80 +390,84 @@ Public Class main
                                 predl()
                             End If
                         Else
-                            If clb_updates.CheckedItems.Contains("BF2Hub") Then
-                                My.Settings.bf2hub = True
-                                If File.Exists(Application.StartupPath & "/dl/bf2hub_setup.exe") Then
-                                    If getfilesha1(Application.StartupPath & "/dl/bf2hub_setup.exe") = "92b6fc5af14c7b20d0a909b19570ae3337b89193" = False Then
-                                        download("BF2Hub", "https://www.bf2hub.com/downloads/bf2hub-client-setup.exe", "bf2hub_setup.exe")
+                            download("Patch 1.50", "https://dl.ministudios.ml/bf2/patches/bf2patch_1.50.exe", "bf2patch_1.50.exe")
+                        End If
+                        clb_updates.Items.RemoveAt(2)
+                        clb_updates.Items.Insert(2, "Patch 1.50")
+                    Else
+                        If clb_updates.CheckedItems.Contains("BF2Hub") Then
+                            My.Settings.bf2hub = True
+                            If File.Exists(Application.StartupPath & "/dl/bf2hub_setup.exe") Then
+                                If getfilesha1(Application.StartupPath & "/dl/bf2hub_setup.exe") = "92b6fc5af14c7b20d0a909b19570ae3337b89193" = False Then
+                                    download("BF2Hub", "https://www.bf2hub.com/downloads/bf2hub-client-setup.exe", "bf2hub_setup.exe")
+                                Else
+                                    clb_updates.Items.RemoveAt(3)
+                                    clb_updates.Items.Insert(3, "BF2Hub")
+                                    dl = True
+                                    predl()
+                                End If
+                            Else
+                                download("BF2Hub", "https://www.bf2hub.com/downloads/bf2hub-client-setup.exe", "bf2hub_setup.exe")
+                            End If
+                            clb_updates.Items.RemoveAt(3)
+                            clb_updates.Items.Insert(3, "BF2hub")
+                        Else
+                            If clb_updates.CheckedItems.Contains("Alt+Tab Fix") Then
+                                My.Settings.atf = True
+                                If File.Exists(Application.StartupPath & "/dl/RendDX9.dll") Then
+                                    If getfilesha1(Application.StartupPath & "/dl/RendDX9.dll") = "5f92d7dfdf36ba3b1f5feab7228a90c4fc331764" = False Then
+                                        download("Alt+Tab Fix", "https://dl.ministudios.ml/bf2/RendDX9.dll", "RendDX9.dll")
                                     Else
-                                        clb_updates.Items.RemoveAt(3)
-                                        clb_updates.Items.Insert(3, "BF2Hub")
+                                        clb_updates.Items.RemoveAt(4)
+                                        clb_updates.Items.Insert(4, "Alt+Tab Fix")
                                         dl = True
                                         predl()
                                     End If
                                 Else
-                                    download("BF2Hub", "https://www.bf2hub.com/downloads/bf2hub-client-setup.exe", "bf2hub_setup.exe")
+                                    download("Alt+Tab Fix", "https://dl.ministudios.ml/bf2/RendDX9.dll", "RendDX9.dll")
                                 End If
-                                clb_updates.Items.RemoveAt(3)
-                                clb_updates.Items.Insert(3, "BF2hub")
+                                clb_updates.Items.RemoveAt(4)
+                                clb_updates.Items.Insert(4, "Alt+Tab Fix")
                             Else
-                                If clb_updates.CheckedItems.Contains("Alt+Tab Fix") Then
-                                    My.Settings.atf = True
-                                    If File.Exists(Application.StartupPath & "/dl/RendDX9.dll") Then
-                                        If getfilesha1(Application.StartupPath & "/dl/RendDX9.dll") = "5f92d7dfdf36ba3b1f5feab7228a90c4fc331764" = False Then
-                                            download("Alt+Tab Fix", "https://dl.ministudios.ml/bf2/RendDX9.dll", "RendDX9.dll")
+                                If clb_updates.CheckedItems.Contains("DirectX 9.0c") Then
+                                    My.Settings.dx = True
+                                    If File.Exists(Application.StartupPath & "/dl/dxsetup.exe") Then
+                                        If getfilesha1(Application.StartupPath & "/dl/dxsetup.exe") = "f8f1217f666bf2f6863631a7d5e5fb3a8d1542df" = False Then
+                                            download("DirectX 9.0c", "https://dl.ministudios.ml/bf2/dxsetup.exe", "dxsetup.exe")
                                         Else
-                                            clb_updates.Items.RemoveAt(4)
-                                            clb_updates.Items.Insert(4, "Alt+Tab Fix")
+                                            clb_updates.Items.RemoveAt(5)
+                                            clb_updates.Items.Insert(5, "DirectX 9.0c")
                                             dl = True
                                             predl()
                                         End If
                                     Else
-                                        download("Alt+Tab Fix", "https://dl.ministudios.ml/bf2/RendDX9.dll", "RendDX9.dll")
+                                        download("DirectX 9.0c", "https://dl.ministudios.ml/bf2/dxsetup.exe", "dxsetup.exe")
                                     End If
-                                    clb_updates.Items.RemoveAt(4)
-                                    clb_updates.Items.Insert(4, "Alt+Tab Fix")
+                                    clb_updates.Items.RemoveAt(5)
+                                    clb_updates.Items.Insert(5, "DirectX 9.0c")
                                 Else
-                                    If clb_updates.CheckedItems.Contains("DirectX 9.0c") Then
-                                        My.Settings.dx = True
-                                        If File.Exists(Application.StartupPath & "/dl/dxsetup.exe") Then
-                                            If getfilesha1(Application.StartupPath & "/dl/dxsetup.exe") = "f8f1217f666bf2f6863631a7d5e5fb3a8d1542df" = False Then
-                                                download("DirectX 9.0c", "https://dl.ministudios.ml/bf2/dxsetup.exe", "dxsetup.exe")
+                                    If clb_updates.CheckedItems.Contains("PunkBuster") Then
+                                        My.Settings.pb = True
+                                        If File.Exists(Application.StartupPath & "/dl/pbsvc.exe") Then
+                                            If getfilesha1(Application.StartupPath & "/dl/pbsvc.exe") = "dbc4aa6f3bebd60310bd53c52691df401b9b4ea1" = False Then
+                                                download("PunkBuster", "https://www.evenbalance.com/downloads/pbsvc/pbsvc.exe", "pbsvc.exe")
                                             Else
-                                                clb_updates.Items.RemoveAt(5)
-                                                clb_updates.Items.Insert(5, "DirectX 9.0c")
+                                                clb_updates.Items.RemoveAt(6)
+                                                clb_updates.Items.Insert(6, "PunkBuster")
                                                 dl = True
                                                 predl()
                                             End If
                                         Else
-                                            download("DirectX 9.0c", "https://dl.ministudios.ml/bf2/dxsetup.exe", "dxsetup.exe")
+                                            download("PunkBuster", "https://www.evenbalance.com/downloads/pbsvc/pbsvc.exe", "pbsvc.exe")
                                         End If
-                                        clb_updates.Items.RemoveAt(5)
-                                        clb_updates.Items.Insert(5, "DirectX 9.0c")
-                                    Else
-                                        If clb_updates.CheckedItems.Contains("PunkBuster") Then
-                                            My.Settings.pb = True
-                                            If File.Exists(Application.StartupPath & "/dl/pbsvc.exe") Then
-                                                If getfilesha1(Application.StartupPath & "/dl/pbsvc.exe") = "dbc4aa6f3bebd60310bd53c52691df401b9b4ea1" = False Then
-                                                    download("PunkBuster", "https://www.evenbalance.com/downloads/pbsvc/pbsvc.exe", "pbsvc.exe")
-                                                Else
-                                                    clb_updates.Items.RemoveAt(6)
-                                                    clb_updates.Items.Insert(6, "PunkBuster")
-                                                    dl = True
-                                                    predl()
-                                                End If
-                                            Else
-                                                download("PunkBuster", "https://www.evenbalance.com/downloads/pbsvc/pbsvc.exe", "pbsvc.exe")
-                                            End If
-                                            clb_updates.Items.RemoveAt(6)
-                                            clb_updates.Items.Insert(6, "PunkBuster")
-                                        End If
+                                        clb_updates.Items.RemoveAt(6)
+                                        clb_updates.Items.Insert(6, "PunkBuster")
                                     End If
                                 End If
                             End If
                         End If
                     End If
-                End If
+                        End If
             End If
         End If
     End Sub
