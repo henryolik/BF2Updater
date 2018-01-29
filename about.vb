@@ -2,8 +2,12 @@
 
     Private Sub Button1_Click(sender As System.Object, e As System.EventArgs) Handles Button1.Click
         If MsgBox("Do you really want to delete ALL downloaded files?", MsgBoxStyle.YesNo, "Are you sure?") = MsgBoxResult.Yes Then
-            IO.Directory.Delete(Application.StartupPath & "/dl", True)
-            Button1.Enabled = False
+            Try
+                IO.Directory.Delete(Application.StartupPath & "/dl", True)
+                Button1.Enabled = False
+            Catch ex As Exception
+                MsgBox("Clearing folder failed! Error: " & ex.ToString, MsgBoxStyle.Critical, "Error!")
+            End Try
         End If
     End Sub
 

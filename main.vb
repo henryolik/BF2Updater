@@ -6,6 +6,7 @@ Imports System.Net
 Imports System.Threading.Tasks
 
 Public Class main
+    Dim dloc As String
     Dim SW As Stopwatch
     Dim dl As Boolean
     Dim bf2ver As String = "Unknown"
@@ -163,6 +164,18 @@ Public Class main
         End If
         check()
         locate()
+        If Directory.Exists(Path.GetTempPath & "BF2Updater") = True Then
+            If File.Exists(Path.GetTempPath & "BF2Updater/dloc.txt") = True And File.ReadAllText(Path.GetTempPath & "BF2Updater/dloc.txt") = Nothing = False Then
+                tb_dloc.Text = File.ReadAllText(Path.GetTempPath & "BF2Updater/dloc.txt")
+                dloc = File.ReadAllText(Path.GetTempPath & "BF2Updater/dloc.txt")
+            Else
+                tb_dloc.Text = Path.GetTempPath & "BF2Updater/dl"
+                dloc = Path.GetTempPath & "BF2Updater/dl"
+            End If
+        Else
+            tb_dloc.Text = Path.GetTempPath & "BF2Updater/dl"
+            dloc = Path.GetTempPath & "BF2Updater/dl"
+        End If
     End Sub
 
     Function getfilesha1(ByVal file_name As String)
@@ -195,10 +208,10 @@ Public Class main
         Dim client As WebClient = New WebClient
         AddHandler client.DownloadProgressChanged, AddressOf download_change
         AddHandler client.DownloadFileCompleted, AddressOf download_completed
-        If My.Computer.FileSystem.DirectoryExists(Application.StartupPath & "/dl") = False Then
-            My.Computer.FileSystem.CreateDirectory(Application.StartupPath & "/dl")
+        If My.Computer.FileSystem.DirectoryExists(dloc) = False Then
+            My.Computer.FileSystem.CreateDirectory(dloc)
         End If
-        client.DownloadFileAsync(New Uri(uri), Application.StartupPath & "/dl/" & ffile)
+        client.DownloadFileAsync(New Uri(uri), dloc & "/" & ffile)
     End Sub
 
     Private Sub download_change(ByVal sender As Object, ByVal e As DownloadProgressChangedEventArgs)
@@ -278,28 +291,28 @@ Public Class main
         If My.Settings.patch11 = True Then
             la_dl.Text = "Patch 1.1"
             pb_load.Value = 50
-            Process.Start(Application.StartupPath & "/dl/bf2patch_1.1.exe").WaitForExit(3600000)
+            Process.Start(dloc & "/bf2patch_1.1.exe").WaitForExit(3600000)
             pb_load.Value = 100
             My.Settings.patch11 = False
         End If
         If My.Settings.patch141 = True Then
             la_dl.Text = "Patch 1.41"
             pb_load.Value = 50
-            Process.Start(Application.StartupPath & "/dl/bf2patch_1.41.exe").WaitForExit(3600000)
+            Process.Start(dloc & "/bf2patch_1.41.exe").WaitForExit(3600000)
             My.Settings.patch141 = False
             pb_load.Value = 100
         End If
         If My.Settings.patch150 = True Then
             la_dl.Text = "Patch 1.50"
             pb_load.Value = 50
-            Process.Start(Application.StartupPath & "/dl/bf2patch_1.50.exe").WaitForExit(3600000)
+            Process.Start(dloc & "/bf2patch_1.50.exe").WaitForExit(3600000)
             My.Settings.patch150 = False
             pb_load.Value = 100
         End If
         If My.Settings.bf2hub = True Then
             la_dl.Text = "BF2Hub"
             pb_load.Value = 50
-            Process.Start(Application.StartupPath & "/dl/bf2hub_setup.exe").WaitForExit(3600000)
+            Process.Start(dloc & "/bf2hub_setup.exe").WaitForExit(3600000)
             My.Settings.bf2hub = False
             pb_load.Value = 100
         End If
@@ -313,21 +326,21 @@ Public Class main
             If File.Exists(folder & "/RendDX9-backup.dll") = False Then
                 File.Copy(folder & "/RendDX9.dll", folder & "/RendDX9-backup.dll", True)
             End If
-            File.Copy(Application.StartupPath & "/dl/RendDX9.dll", folder & "/RendDX9.dll", True)
+            File.Copy(dloc & "/RendDX9.dll", folder & "/RendDX9.dll", True)
             My.Settings.atf = False
             pb_load.Value = 100
         End If
         If My.Settings.dx = True Then
             la_dl.Text = "DirectX 9.0c"
             pb_load.Value = 50
-            Process.Start(Application.StartupPath & "/dl/dxsetup.exe").WaitForExit(3600000)
+            Process.Start(dloc & "/dxsetup.exe").WaitForExit(3600000)
             My.Settings.dx = False
             pb_load.Value = 100
         End If
         If My.Settings.pb = True Then
             la_dl.Text = "PunkBuster"
             pb_load.Value = 50
-            Process.Start(Application.StartupPath & "/dl/pbsvc.exe").WaitForExit(3600000)
+            Process.Start(dloc & "/pbsvc.exe").WaitForExit(3600000)
             My.Settings.pb = False
             pb_load.Value = 100
         End If
@@ -346,8 +359,8 @@ Public Class main
             dl = False
             If clb_updates.CheckedItems.Contains("Patch 1.1") Then
                 My.Settings.patch11 = True
-                If File.Exists(Application.StartupPath & "/dl/bf2patch_1.1.exe") Then
-                    If getfilesha1(Application.StartupPath & "/dl/bf2patch_1.1.exe") = "f30c27ff0f1398c11c0065d415eb79c6def1ea2d" = False Then
+                If File.Exists(dloc & "/bf2patch_1.1.exe") Then
+                    If getfilesha1(dloc & "/bf2patch_1.1.exe") = "f30c27ff0f1398c11c0065d415eb79c6def1ea2d" = False Then
                         download("Patch 1.1", "https://dl.ministudios.ml/bf2/patches/bf2patch_1.1.exe", "bf2patch_1.1.exe")
                     Else
                         clb_updates.Items.RemoveAt(0)
@@ -363,8 +376,8 @@ Public Class main
             Else
                 If clb_updates.CheckedItems.Contains("Patch 1.41") Then
                     My.Settings.patch141 = True
-                    If File.Exists(Application.StartupPath & "/dl/bf2patch_1.41.exe") Then
-                        If getfilesha1(Application.StartupPath & "/dl/bf2patch_1.41.exe") = "4956f67dbe8873d20f40f87e051f08170420e164" = False Then
+                    If File.Exists(dloc & "/bf2patch_1.41.exe") Then
+                        If getfilesha1(dloc & "/bf2patch_1.41.exe") = "4956f67dbe8873d20f40f87e051f08170420e164" = False Then
                             download("Patch 1.41", "https://dl.ministudios.ml/bf2/patches/bf2patch_1.41.exe", "bf2patch_1.41.exe")
                         Else
                             clb_updates.Items.RemoveAt(1)
@@ -380,8 +393,8 @@ Public Class main
                 Else
                     If clb_updates.CheckedItems.Contains("Patch 1.50") Then
                         My.Settings.patch150 = True
-                        If File.Exists(Application.StartupPath & "/dl/bf2patch_1.50.exe") Then
-                            If getfilesha1(Application.StartupPath & "/dl/bf2patch_1.50.exe") = "578e66b5695723ce375f52bef780d853220734cc" = False Then
+                        If File.Exists(dloc & "/bf2patch_1.50.exe") Then
+                            If getfilesha1(dloc & "/bf2patch_1.50.exe") = "578e66b5695723ce375f52bef780d853220734cc" = False Then
                                 download("Patch 1.50", "https://dl.ministudios.ml/bf2/patches/bf2patch_1.50.exe", "bf2patch_1.50.exe")
                             Else
                                 clb_updates.Items.RemoveAt(2)
@@ -397,8 +410,8 @@ Public Class main
                     Else
                         If clb_updates.CheckedItems.Contains("BF2Hub") Then
                             My.Settings.bf2hub = True
-                            If File.Exists(Application.StartupPath & "/dl/bf2hub_setup.exe") Then
-                                If getfilesha1(Application.StartupPath & "/dl/bf2hub_setup.exe") = "92b6fc5af14c7b20d0a909b19570ae3337b89193" = False Then
+                            If File.Exists(dloc & "/bf2hub_setup.exe") Then
+                                If getfilesha1(dloc & "/bf2hub_setup.exe") = "92b6fc5af14c7b20d0a909b19570ae3337b89193" = False Then
                                     download("BF2Hub", "https://www.bf2hub.com/downloads/bf2hub-client-setup.exe", "bf2hub_setup.exe")
                                 Else
                                     clb_updates.Items.RemoveAt(3)
@@ -414,8 +427,8 @@ Public Class main
                         Else
                             If clb_updates.CheckedItems.Contains("Alt+Tab Fix") Then
                                 My.Settings.atf = True
-                                If File.Exists(Application.StartupPath & "/dl/RendDX9.dll") Then
-                                    If getfilesha1(Application.StartupPath & "/dl/RendDX9.dll") = "5f92d7dfdf36ba3b1f5feab7228a90c4fc331764" = False Then
+                                If File.Exists(dloc & "/RendDX9.dll") Then
+                                    If getfilesha1(dloc & "/RendDX9.dll") = "5f92d7dfdf36ba3b1f5feab7228a90c4fc331764" = False Then
                                         download("Alt+Tab Fix", "https://dl.ministudios.ml/bf2/RendDX9.dll", "RendDX9.dll")
                                     Else
                                         clb_updates.Items.RemoveAt(4)
@@ -431,8 +444,8 @@ Public Class main
                             Else
                                 If clb_updates.CheckedItems.Contains("DirectX 9.0c") Then
                                     My.Settings.dx = True
-                                    If File.Exists(Application.StartupPath & "/dl/dxsetup.exe") Then
-                                        If getfilesha1(Application.StartupPath & "/dl/dxsetup.exe") = "f8f1217f666bf2f6863631a7d5e5fb3a8d1542df" = False Then
+                                    If File.Exists(dloc & "/dxsetup.exe") Then
+                                        If getfilesha1(dloc & "/dxsetup.exe") = "f8f1217f666bf2f6863631a7d5e5fb3a8d1542df" = False Then
                                             download("DirectX 9.0c", "https://dl.ministudios.ml/bf2/dxsetup.exe", "dxsetup.exe")
                                         Else
                                             clb_updates.Items.RemoveAt(5)
@@ -448,8 +461,8 @@ Public Class main
                                 Else
                                     If clb_updates.CheckedItems.Contains("PunkBuster") Then
                                         My.Settings.pb = True
-                                        If File.Exists(Application.StartupPath & "/dl/pbsvc.exe") Then
-                                            If getfilesha1(Application.StartupPath & "/dl/pbsvc.exe") = "dbc4aa6f3bebd60310bd53c52691df401b9b4ea1" = False Then
+                                        If File.Exists(dloc & "/pbsvc.exe") Then
+                                            If getfilesha1(dloc & "/pbsvc.exe") = "dbc4aa6f3bebd60310bd53c52691df401b9b4ea1" = False Then
                                                 download("PunkBuster", "https://www.evenbalance.com/downloads/pbsvc/pbsvc.exe", "pbsvc.exe")
                                             Else
                                                 clb_updates.Items.RemoveAt(6)
@@ -467,7 +480,7 @@ Public Class main
                             End If
                         End If
                     End If
-                        End If
+                End If
             End If
         End If
     End Sub
@@ -481,6 +494,7 @@ Public Class main
         la_speed.Text = ""
         la_perc.Text = ""
         pb_load.Value = 0
+        tb_dloc.Enabled = True
     End Sub
 
     Public Sub disable()
@@ -492,14 +506,15 @@ Public Class main
         la_speed.Text = ""
         la_perc.Text = ""
         pb_load.Value = 0
+        tb_dloc.Enabled = False
     End Sub
 
     Public Sub CheckForUpdates()
-        If Directory.Exists(IO.Path.GetTempPath & "/BF2Updater") = False Then
-            Directory.CreateDirectory(IO.Path.GetTempPath & "/BF2Updater")
+        If Directory.Exists(IO.Path.GetTempPath & "BF2Updater") = False Then
+            Directory.CreateDirectory(IO.Path.GetTempPath & "BF2Updater")
         End If
-        Dim version As String = IO.Path.GetTempPath & "/BF2Updater" & "/version.txt"
-        Dim updater As String = IO.Path.GetTempPath & "/BF2Updater" & "/updater.exe"
+        Dim version As String = IO.Path.GetTempPath & "BF2Updater/version.txt"
+        Dim updater As String = IO.Path.GetTempPath & "BF2Updater/updater.exe"
         Dim MyVer As String = My.Application.Info.Version.ToString
         If My.Computer.FileSystem.FileExists(version) Then
             My.Computer.FileSystem.DeleteFile(version)
@@ -518,7 +533,7 @@ Public Class main
                 If IsConnectionAvailable() = True Then
                     wc.DownloadFile("https://dl.ministudios.ml/updater/updater.exe", updater)
                 End If
-                Process.Start(updater, "-bf2 -e:" & Application.ExecutablePath)
+                Process.Start(updater, "-bf2 -e:" & """" & Application.ExecutablePath & """")
                 Me.Close()
             End If
         End If
@@ -539,4 +554,32 @@ Public Class main
             Return False
         End Try
     End Function
+
+    Private Sub tb_dloc_TextChanged(sender As System.Object, e As System.EventArgs) Handles tb_dloc.TextChanged
+        Dim dloctxt As String = Path.GetTempPath & "BF2Updater/dloc.txt"
+        If Directory.Exists(Path.GetTempPath & "BF2Updater") = False Then
+            Directory.CreateDirectory(Path.GetTempPath & "BF2Updater")
+        Else
+            If File.Exists(dloctxt) = False Then
+                File.Create(dloctxt).Dispose()
+            End If
+        End If
+        File.WriteAllText(dloctxt, tb_dloc.Text)
+        dloc = tb_dloc.Text
+    End Sub
+
+    Private Sub tb_dloc_click(sender As System.Object, e As System.EventArgs) Handles tb_dloc.Click
+        Dim fold As New FolderBrowserDialog
+        fold.ShowNewFolderButton = True
+        If fold.ShowDialog() = DialogResult.OK Then
+            tb_dloc.Text = fold.SelectedPath
+            Dim root As Environment.SpecialFolder = fold.RootFolder
+            dloc = fold.SelectedPath
+        End If
+    End Sub
+
+    Private Sub resetdloc(sender As System.Object, e As System.EventArgs) Handles bu_reset.Click
+        tb_dloc.Text = Path.GetTempPath & "BF2Updater\dl"
+        dloc = Path.GetTempPath & "BF2Updater\dl"
+    End Sub
 End Class
