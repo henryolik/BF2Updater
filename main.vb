@@ -6,7 +6,7 @@ Imports System.Net
 Imports System.Threading.Tasks
 
 Public Class main
-    Dim dloc As String
+    Public dloc As String
     Dim SW As Stopwatch
     Dim dl As Boolean
     Dim bf2ver As String = "Unknown"

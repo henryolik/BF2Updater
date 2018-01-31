@@ -33,11 +33,11 @@ Partial Class about
         '
         Me.Label1.AutoSize = True
         Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 24.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(238, Byte))
-        Me.Label1.Location = New System.Drawing.Point(8, 9)
+        Me.Label1.Location = New System.Drawing.Point(4, 9)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(284, 37)
+        Me.Label1.Size = New System.Drawing.Size(309, 37)
         Me.Label1.TabIndex = 0
-        Me.Label1.Text = "BF2Updater v1.0.4"
+        Me.Label1.Text = "BF2Updater v1.0.4.1"
         '
         'Label2
         '
@@ -51,7 +51,7 @@ Partial Class about
         'Label3
         '
         Me.Label3.AutoSize = True
-        Me.Label3.Location = New System.Drawing.Point(169, 82)
+        Me.Label3.Location = New System.Drawing.Point(188, 82)
         Me.Label3.Name = "Label3"
         Me.Label3.Size = New System.Drawing.Size(125, 13)
         Me.Label3.TabIndex = 2
@@ -61,7 +61,7 @@ Partial Class about
         '
         Me.Button1.Location = New System.Drawing.Point(12, 49)
         Me.Button1.Name = "Button1"
-        Me.Button1.Size = New System.Drawing.Size(273, 23)
+        Me.Button1.Size = New System.Drawing.Size(288, 23)
         Me.Button1.TabIndex = 3
         Me.Button1.Text = "Delete downloaded files"
         Me.Button1.UseVisualStyleBackColor = True
@@ -70,14 +70,14 @@ Partial Class about
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(297, 98)
+        Me.ClientSize = New System.Drawing.Size(312, 98)
         Me.Controls.Add(Me.Button1)
         Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.Label1)
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "about"
-        Me.Text = "About"
+        Me.Text = "About | BF2Updater"
         Me.ResumeLayout(False)
         Me.PerformLayout()
 

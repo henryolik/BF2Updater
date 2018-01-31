@@ -104,7 +104,7 @@ Partial Class main
         'la_version
         '
         Me.la_version.AutoSize = True
-        Me.la_version.Location = New System.Drawing.Point(396, 36)
+        Me.la_version.Location = New System.Drawing.Point(393, 36)
         Me.la_version.Name = "la_version"
         Me.la_version.Size = New System.Drawing.Size(162, 13)
         Me.la_version.TabIndex = 5
@@ -289,7 +289,7 @@ Partial Class main
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MainMenuStrip = Me.MenuStrip1
         Me.Name = "main"
-        Me.Text = "BF2Updater v1.0.4"
+        Me.Text = "BF2Updater v1.0.4.1"
         Me.MenuStrip1.ResumeLayout(False)
         Me.MenuStrip1.PerformLayout()
         Me.ResumeLayout(False)
