@@ -63,7 +63,7 @@ Partial Class about
         Me.Button1.Name = "Button1"
         Me.Button1.Size = New System.Drawing.Size(288, 23)
         Me.Button1.TabIndex = 3
-        Me.Button1.Text = "Delete downloaded files"
+        Me.Button1.Text = "Clean download folder"
         Me.Button1.UseVisualStyleBackColor = True
         '
         'about
