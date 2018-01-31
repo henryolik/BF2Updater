@@ -23,58 +23,58 @@ Partial Class about
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(about))
-        Me.Label1 = New System.Windows.Forms.Label()
-        Me.Label2 = New System.Windows.Forms.Label()
-        Me.Label3 = New System.Windows.Forms.Label()
-        Me.Button1 = New System.Windows.Forms.Button()
+        Me.la_ver = New System.Windows.Forms.Label()
+        Me.la_c = New System.Windows.Forms.Label()
+        Me.la_www = New System.Windows.Forms.Label()
+        Me.bu_clean = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
-        'Label1
+        'la_ver
         '
-        Me.Label1.AutoSize = True
-        Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 24.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(238, Byte))
-        Me.Label1.Location = New System.Drawing.Point(4, 9)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(309, 37)
-        Me.Label1.TabIndex = 0
-        Me.Label1.Text = "BF2Updater v1.0.4.1"
+        Me.la_ver.AutoSize = True
+        Me.la_ver.Font = New System.Drawing.Font("Microsoft Sans Serif", 24.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(238, Byte))
+        Me.la_ver.Location = New System.Drawing.Point(4, 9)
+        Me.la_ver.Name = "la_ver"
+        Me.la_ver.Size = New System.Drawing.Size(311, 37)
+        Me.la_ver.TabIndex = 0
+        Me.la_ver.Text = "BF2Updater v1.0.4.2"
         '
-        'Label2
+        'la_c
         '
-        Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(0, 82)
-        Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(109, 13)
-        Me.Label2.TabIndex = 1
-        Me.Label2.Text = "© henryolik 2017 - 18"
+        Me.la_c.AutoSize = True
+        Me.la_c.Location = New System.Drawing.Point(0, 82)
+        Me.la_c.Name = "la_c"
+        Me.la_c.Size = New System.Drawing.Size(109, 13)
+        Me.la_c.TabIndex = 1
+        Me.la_c.Text = "© henryolik 2017 - 18"
         '
-        'Label3
+        'la_www
         '
-        Me.Label3.AutoSize = True
-        Me.Label3.Location = New System.Drawing.Point(188, 82)
-        Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(125, 13)
-        Me.Label3.TabIndex = 2
-        Me.Label3.Text = "https://bf2.ministudios.ml"
+        Me.la_www.AutoSize = True
+        Me.la_www.Location = New System.Drawing.Point(188, 82)
+        Me.la_www.Name = "la_www"
+        Me.la_www.Size = New System.Drawing.Size(125, 13)
+        Me.la_www.TabIndex = 2
+        Me.la_www.Text = "https://bf2.ministudios.ml"
         '
-        'Button1
+        'bu_clean
         '
-        Me.Button1.Location = New System.Drawing.Point(12, 49)
-        Me.Button1.Name = "Button1"
-        Me.Button1.Size = New System.Drawing.Size(288, 23)
-        Me.Button1.TabIndex = 3
-        Me.Button1.Text = "Clean download folder"
-        Me.Button1.UseVisualStyleBackColor = True
+        Me.bu_clean.Location = New System.Drawing.Point(12, 49)
+        Me.bu_clean.Name = "bu_clean"
+        Me.bu_clean.Size = New System.Drawing.Size(288, 23)
+        Me.bu_clean.TabIndex = 3
+        Me.bu_clean.Text = "Clean download folder"
+        Me.bu_clean.UseVisualStyleBackColor = True
         '
         'about
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(312, 98)
-        Me.Controls.Add(Me.Button1)
-        Me.Controls.Add(Me.Label3)
-        Me.Controls.Add(Me.Label2)
-        Me.Controls.Add(Me.Label1)
+        Me.Controls.Add(Me.bu_clean)
+        Me.Controls.Add(Me.la_www)
+        Me.Controls.Add(Me.la_c)
+        Me.Controls.Add(Me.la_ver)
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "about"
         Me.Text = "About | BF2Updater"
@@ -82,8 +82,8 @@ Partial Class about
         Me.PerformLayout()
 
     End Sub
-    Friend WithEvents Label1 As System.Windows.Forms.Label
-    Friend WithEvents Label2 As System.Windows.Forms.Label
-    Friend WithEvents Label3 As System.Windows.Forms.Label
-    Friend WithEvents Button1 As System.Windows.Forms.Button
+    Friend WithEvents la_ver As System.Windows.Forms.Label
+    Friend WithEvents la_c As System.Windows.Forms.Label
+    Friend WithEvents la_www As System.Windows.Forms.Label
+    Friend WithEvents bu_clean As System.Windows.Forms.Button
 End Class

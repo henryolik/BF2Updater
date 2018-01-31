@@ -165,16 +165,16 @@ Public Class main
         check()
         locate()
         If Directory.Exists(Path.GetTempPath & "BF2Updater") = True Then
-            If File.Exists(Path.GetTempPath & "BF2Updater/dloc.txt") = True And File.ReadAllText(Path.GetTempPath & "BF2Updater/dloc.txt") = Nothing = False Then
-                tb_dloc.Text = File.ReadAllText(Path.GetTempPath & "BF2Updater/dloc.txt")
-                dloc = File.ReadAllText(Path.GetTempPath & "BF2Updater/dloc.txt")
+            If File.Exists(Path.GetTempPath & "BF2Updater\dloc.txt") = True AndAlso File.ReadAllText(Path.GetTempPath & "BF2Updater\dloc.txt") = Nothing = False Then
+                tb_dloc.Text = File.ReadAllText(Path.GetTempPath & "BF2Updater\dloc.txt")
+                dloc = File.ReadAllText(Path.GetTempPath & "BF2Updater\dloc.txt")
             Else
-                tb_dloc.Text = Path.GetTempPath & "BF2Updater/dl"
+                tb_dloc.Text = Path.GetTempPath & "BF2Updater\dl"
                 dloc = Path.GetTempPath & "BF2Updater/dl"
             End If
         Else
-            tb_dloc.Text = Path.GetTempPath & "BF2Updater/dl"
-            dloc = Path.GetTempPath & "BF2Updater/dl"
+            tb_dloc.Text = Path.GetTempPath & "BF2Updater\dl"
+            dloc = Path.GetTempPath & "BF2Updater\dl"
         End If
     End Sub
 
@@ -486,7 +486,7 @@ Public Class main
     End Sub
 
     Public Sub enable()
-        about.Button1.Enabled = True
+        about.bu_clean.Enabled = True
         bu_start.Enabled = True
         clb_updates.Enabled = True
         la_dl.Text = ""
@@ -498,7 +498,7 @@ Public Class main
     End Sub
 
     Public Sub disable()
-        about.Button1.Enabled = False
+        about.bu_clean.Enabled = False
         bu_start.Enabled = False
         clb_updates.Enabled = False
         la_dl.Text = ""

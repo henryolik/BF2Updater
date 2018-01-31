@@ -2,10 +2,10 @@
 
 Public Class about
 
-    Private Sub Button1_Click(sender As System.Object, e As System.EventArgs) Handles Button1.Click
+    Private Sub Button1_Click(sender As System.Object, e As System.EventArgs) Handles bu_clean.Click
         If MsgBox("Do you really want to delete ALL downloaded files?", MsgBoxStyle.YesNo, "Are you sure?") = MsgBoxResult.Yes Then
             Try
-                Button1.Enabled = False
+                bu_clean.Enabled = False
                 For Each deleteFile In Directory.GetFiles(main.dloc, "*.*", SearchOption.TopDirectoryOnly)
                     File.Delete(deleteFile)
                 Next
@@ -17,7 +17,7 @@ Public Class about
 
     Private Sub about_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
         If Directory.Exists(main.dloc) = False OrElse Directory.GetFiles(main.dloc).Count < 1 OrElse main.bu_start.Enabled = False Then
-            Button1.Enabled = False
+            bu_clean.Enabled = False
         End If
     End Sub
 End Class
