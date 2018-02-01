@@ -495,9 +495,11 @@ Public Class main
         la_perc.Text = ""
         pb_load.Value = 0
         tb_dloc.Enabled = True
+        bu_reset.Enabled = True
     End Sub
 
     Public Sub disable()
+        bu_reset.Enabled = False
         about.bu_clean.Enabled = False
         bu_start.Enabled = False
         clb_updates.Enabled = False

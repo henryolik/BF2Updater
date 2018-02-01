@@ -37,7 +37,7 @@ Partial Class about
         Me.la_ver.Name = "la_ver"
         Me.la_ver.Size = New System.Drawing.Size(311, 37)
         Me.la_ver.TabIndex = 0
-        Me.la_ver.Text = "BF2Updater v1.0.4.2"
+        Me.la_ver.Text = "BF2Updater v1.0.4.3"
         '
         'la_c
         '

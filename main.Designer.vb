@@ -289,7 +289,7 @@ Partial Class main
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MainMenuStrip = Me.MenuStrip1
         Me.Name = "main"
-        Me.Text = "BF2Updater v1.0.4.2"
+        Me.Text = "BF2Updater v1.0.4.3"
         Me.MenuStrip1.ResumeLayout(False)
         Me.MenuStrip1.PerformLayout()
         Me.ResumeLayout(False)
