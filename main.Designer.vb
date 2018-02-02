@@ -247,6 +247,7 @@ Partial Class main
         '
         Me.tb_dloc.Location = New System.Drawing.Point(12, 94)
         Me.tb_dloc.Name = "tb_dloc"
+        Me.tb_dloc.ReadOnly = True
         Me.tb_dloc.Size = New System.Drawing.Size(464, 20)
         Me.tb_dloc.TabIndex = 20
         '
