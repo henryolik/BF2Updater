@@ -33,11 +33,11 @@ Partial Class about
         '
         Me.la_ver.AutoSize = True
         Me.la_ver.Font = New System.Drawing.Font("Microsoft Sans Serif", 24.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(238, Byte))
-        Me.la_ver.Location = New System.Drawing.Point(4, 9)
+        Me.la_ver.Location = New System.Drawing.Point(15, 9)
         Me.la_ver.Name = "la_ver"
-        Me.la_ver.Size = New System.Drawing.Size(311, 37)
+        Me.la_ver.Size = New System.Drawing.Size(284, 37)
         Me.la_ver.TabIndex = 0
-        Me.la_ver.Text = "BF2Updater v1.0.4.3"
+        Me.la_ver.Text = "BF2Updater v1.0.5"
         '
         'la_c
         '

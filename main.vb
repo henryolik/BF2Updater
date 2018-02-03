@@ -31,6 +31,7 @@ Public Class main
     End Sub
 
     Public Sub check()
+        Dim bf2hub As Integer = 0
         pb_load.Minimum = 0
         pb_load.Maximum = 100
         'Check for DX9.0c
@@ -44,40 +45,19 @@ Public Class main
         End If
         'Check for BF2 version
         Dim bf2exe_sha1 As String = getfilesha1(tb_loc.Text & "/BF2.exe")
-        If bf2exe_sha1 = "aa5d39541c6dcda42f766eefead02ebbbcb10525" Or bf2exe_sha1 = "8f425b9c73d868a3ca56d157abc99f3c3f560c8d" Then
-            bf2ver = "1.50 BF2Hub"
-            la_11.Text = "INSTALLED!"
-            la_11.ForeColor = Color.Green
-            la_141.Text = "INSTALLED!"
-            la_141.ForeColor = Color.Green
-            la_150.Text = "INSTALLED!"
-            la_150.ForeColor = Color.Green
-            la_bf2hub.Text = "INSTALLED!"
-            la_bf2hub.ForeColor = Color.Green
-        End If
-        If bf2exe_sha1 = "d3c0cd56f39b5fd2dbf99f6c5c4fe4719b79f3f5" Then
-            bf2ver = "1.50 Revive"
-            la_11.Text = "INSTALLED!"
-            la_11.ForeColor = Color.Green
-            la_141.Text = "INSTALLED!"
-            la_141.ForeColor = Color.Green
-            la_150.Text = "INSTALLED!"
-            la_150.ForeColor = Color.Green
-        End If
-        If bf2exe_sha1 = "3681849f05f6963223c74d98066fbbc9b8520a15" Then
-            bf2ver = "1.50"
-            la_11.Text = "INSTALLED!"
-            la_11.ForeColor = Color.Green
-            la_141.Text = "INSTALLED!"
-            la_141.ForeColor = Color.Green
-            la_150.Text = "INSTALLED!"
-            la_150.ForeColor = Color.Green
-        End If
         If bf2exe_sha1 = "c3bd54bbf23a3b727ae245b14784e3dbd78c525f" Then
             bf2ver = "1.0/1.01"
         End If
+        If bf2exe_sha1 = "cad18ce137511bd28701a83c8193098415e35dcf" Then
+            bf2ver = "1.0/1.01 BF2Hub"
+            bf2hub = 100
+        End If
         If bf2exe_sha1 = "72515c2641ea4e241b252eefd9fbaee0f33cbb38" Then
             bf2ver = "1.03"
+        End If
+        If bf2exe_sha1 = "924edc8ee2c7dea24acb8a3489e9328bfdd773ef" Then
+            bf2ver = "1.03 BF2Hub"
+            bf2hub = 103
         End If
         If bf2exe_sha1 = "30a0071d82a42c2d7e908069b58dbc40d7f1699b" Then
             bf2ver = "1.1"
@@ -88,6 +68,12 @@ Public Class main
             bf2ver = "1.12"
             la_11.Text = "INSTALLED!"
             la_11.ForeColor = Color.Green
+        End If
+        If bf2exe_sha1 = "687a6945328dddbedadede4b7a8d575cccab4802" Then
+            bf2ver = "1.12 BF2Hub"
+            la_11.Text = "INSTALLED!"
+            la_11.ForeColor = Color.Green
+            bf2hub = 112
         End If
         If bf2exe_sha1 = "243527754c7aa03bb5af43c6308ab89753ce510f" Then
             bf2ver = "1.2"
@@ -109,10 +95,22 @@ Public Class main
             la_11.Text = "INSTALLED!"
             la_11.ForeColor = Color.Green
         End If
+        If bf2exe_sha1 = "d8506080cb0c86ac148e068fcd3ce5855cf2d664" Then
+            bf2ver = "1.3 BF2Hub"
+            la_11.Text = "INSTALLED!"
+            la_11.ForeColor = Color.Green
+            bf2hub = 130
+        End If
         If bf2exe_sha1 = "6c2224b348b90710624607c24af7aa78f2204536" Then
             bf2ver = "1.4"
             la_11.Text = "INSTALLED!"
             la_11.ForeColor = Color.Green
+        End If
+        If bf2exe_sha1 = "2ed07d5dcea4a56c6336ad351c8d9a1e179430ef" Then
+            bf2ver = "1.4 BF2Hub"
+            la_11.Text = "INSTALLED!"
+            la_11.ForeColor = Color.Green
+            bf2hub = 140
         End If
         If bf2exe_sha1 = "85b27c0ee23cc3a1a67e1c2fe66ff4049e40fa42" Then
             bf2ver = "1.41"
@@ -121,7 +119,79 @@ Public Class main
             la_141.Text = "INSTALLED!"
             la_141.ForeColor = Color.Green
         End If
+        If bf2exe_sha1 = "711cc7a0703eb1812760d0ff706d681ae54689ac" Then
+            bf2ver = "1.41 BF2Hub"
+            la_11.Text = "INSTALLED!"
+            la_11.ForeColor = Color.Green
+            la_141.Text = "INSTALLED!"
+            la_141.ForeColor = Color.Green
+            bf2hub = 141
+        End If
+        If bf2exe_sha1 = "3681849f05f6963223c74d98066fbbc9b8520a15" Then
+            bf2ver = "1.50"
+            la_11.Text = "INSTALLED!"
+            la_11.ForeColor = Color.Green
+            la_141.Text = "INSTALLED!"
+            la_141.ForeColor = Color.Green
+            la_150.Text = "INSTALLED!"
+            la_150.ForeColor = Color.Green
+        End If
+        If bf2exe_sha1 = "aa5d39541c6dcda42f766eefead02ebbbcb10525" Or bf2exe_sha1 = "8f425b9c73d868a3ca56d157abc99f3c3f560c8d" Then
+            bf2ver = "1.50 BF2Hub"
+            la_11.Text = "INSTALLED!"
+            la_11.ForeColor = Color.Green
+            la_141.Text = "INSTALLED!"
+            la_141.ForeColor = Color.Green
+            la_150.Text = "INSTALLED!"
+            la_150.ForeColor = Color.Green
+            bf2hub = 150
+        End If
+        If bf2exe_sha1 = "d3c0cd56f39b5fd2dbf99f6c5c4fe4719b79f3f5" Then
+            bf2ver = "1.50 Revive"
+            la_11.Text = "INSTALLED!"
+            la_11.ForeColor = Color.Green
+            la_141.Text = "INSTALLED!"
+            la_141.ForeColor = Color.Green
+            la_150.Text = "INSTALLED!"
+            la_150.ForeColor = Color.Green
+        End If
         la_version.Text = "Detected BF2 version: " & bf2ver
+        'Check for BF2Hub
+        If Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles) & "/BF2Hub Client") AndAlso File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles) & "/BF2Hub Client/bf2hub.exe") Then
+            If bf2hub < 150 And bf2hub = 0 = False Then
+                la_bf2hub.Text = "INSTALLED, OLD PATCH"
+                la_bf2hub.ForeColor = Color.Orange
+                tt_main.SetToolTip(la_bf2hub, "Make sure you have installed patch 1.50 and run BF2Hub")
+                la_bf2hub.Font = New Font("Microsoft Sans Serif", 6)
+                la_bf2hub.Location = New Point(la_bf2hub.Location.X, la_bf2hub.Location.Y + 3)
+            End If
+            If bf2hub = 150 Then
+                la_bf2hub.Text = "INSTALLED!"
+                la_bf2hub.ForeColor = Color.Green
+            End If
+            If bf2hub = 0 Then
+                la_bf2hub.Text = "INSTALLED, NOT PATCHED"
+                la_bf2hub.ForeColor = Color.Orange
+                tt_main.SetToolTip(la_bf2hub, "Run BF2Hub")
+                la_bf2hub.Font = New Font("Microsoft Sans Serif", 6)
+                la_bf2hub.Location = New Point(la_bf2hub.Location.X, la_bf2hub.Location.Y + 3)
+            End If
+        Else
+            If bf2hub = 150 Then
+                la_bf2hub.Text = "NOT INSTALLED, PATCHED"
+                la_bf2hub.ForeColor = Color.Orange
+                tt_main.SetToolTip(la_bf2hub, "Install BF2Hub to keep your game up to date")
+                la_bf2hub.Font = New Font("Microsoft Sans Serif", 6)
+                la_bf2hub.Location = New Point(la_bf2hub.Location.X, la_bf2hub.Location.Y + 3)
+            End If
+            If bf2hub < 150 And bf2hub = 0 = False Then
+                la_bf2hub.Text = "NOT INSTALLED, OLD PATCH"
+                la_bf2hub.ForeColor = Color.Orange
+                tt_main.SetToolTip(la_bf2hub, "Make sure you have patch 1.50 installed and install and run BF2Hub")
+                la_bf2hub.Font = New Font("Microsoft Sans Serif", 6)
+                la_bf2hub.Location = New Point(la_bf2hub.Location.X, la_bf2hub.Location.Y + 3)
+            End If
+        End If
         'Check for Alt+Tab fix
         Dim alttab_sha1 As String = getfilesha1(tb_loc.Text & "/RendDX9.dll")
         If alttab_sha1 = "5f92d7dfdf36ba3b1f5feab7228a90c4fc331764" Then

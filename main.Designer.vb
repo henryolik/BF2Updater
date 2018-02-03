@@ -22,9 +22,10 @@ Partial Class main
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(main))
         Me.tb_loc = New System.Windows.Forms.TextBox()
-        Me.MenuStrip1 = New System.Windows.Forms.MenuStrip()
+        Me.ms_main = New System.Windows.Forms.MenuStrip()
         Me.mi_about = New System.Windows.Forms.ToolStripMenuItem()
         Me.la_loc = New System.Windows.Forms.Label()
         Me.clb_updates = New System.Windows.Forms.CheckedListBox()
@@ -46,7 +47,8 @@ Partial Class main
         Me.la_dloc = New System.Windows.Forms.Label()
         Me.tb_dloc = New System.Windows.Forms.TextBox()
         Me.bu_reset = New System.Windows.Forms.Button()
-        Me.MenuStrip1.SuspendLayout()
+        Me.tt_main = New System.Windows.Forms.ToolTip(Me.components)
+        Me.ms_main.SuspendLayout()
         Me.SuspendLayout()
         '
         'tb_loc
@@ -58,14 +60,14 @@ Partial Class main
         Me.tb_loc.TabIndex = 0
         Me.tb_loc.Text = "C:/Program Files (x86)/EA Games/Battlefield 2"
         '
-        'MenuStrip1
+        'ms_main
         '
-        Me.MenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mi_about})
-        Me.MenuStrip1.Location = New System.Drawing.Point(0, 0)
-        Me.MenuStrip1.Name = "MenuStrip1"
-        Me.MenuStrip1.Size = New System.Drawing.Size(571, 24)
-        Me.MenuStrip1.TabIndex = 1
-        Me.MenuStrip1.Text = "MenuStrip1"
+        Me.ms_main.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mi_about})
+        Me.ms_main.Location = New System.Drawing.Point(0, 0)
+        Me.ms_main.Name = "ms_main"
+        Me.ms_main.Size = New System.Drawing.Size(571, 24)
+        Me.ms_main.TabIndex = 1
+        Me.ms_main.Text = "MenuStrip1"
         '
         'mi_about
         '
@@ -286,19 +288,19 @@ Partial Class main
         Me.Controls.Add(Me.clb_updates)
         Me.Controls.Add(Me.la_loc)
         Me.Controls.Add(Me.tb_loc)
-        Me.Controls.Add(Me.MenuStrip1)
+        Me.Controls.Add(Me.ms_main)
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
-        Me.MainMenuStrip = Me.MenuStrip1
+        Me.MainMenuStrip = Me.ms_main
         Me.Name = "main"
-        Me.Text = "BF2Updater v1.0.4.3"
-        Me.MenuStrip1.ResumeLayout(False)
-        Me.MenuStrip1.PerformLayout()
+        Me.Text = "BF2Updater v1.0.5"
+        Me.ms_main.ResumeLayout(False)
+        Me.ms_main.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
     End Sub
     Friend WithEvents tb_loc As System.Windows.Forms.TextBox
-    Friend WithEvents MenuStrip1 As System.Windows.Forms.MenuStrip
+    Friend WithEvents ms_main As System.Windows.Forms.MenuStrip
     Friend WithEvents mi_about As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents la_loc As System.Windows.Forms.Label
     Friend WithEvents clb_updates As System.Windows.Forms.CheckedListBox
@@ -320,5 +322,6 @@ Partial Class main
     Friend WithEvents la_dloc As System.Windows.Forms.Label
     Friend WithEvents tb_dloc As System.Windows.Forms.TextBox
     Friend WithEvents bu_reset As System.Windows.Forms.Button
+    Friend WithEvents tt_main As System.Windows.Forms.ToolTip
 
 End Class
