@@ -23,10 +23,11 @@ Public Class main
             tb_loc.Text = folder
             If My.Computer.FileSystem.DirectoryExists(tb_loc.Text) = False Then
                 MsgBox("Installation folder was not found! Install the game from DVD or from https://bf2.ministudios.ml")
+                me.close()
             End If
         Catch ex As Exception
-            MsgBox(ex.ToString & " BF2 installation was not detected. Install it, please, from the CD via installator or from https://bf2.ministudios.ml.")
-            tb_loc.Text = "NOT DETECTED"
+            MsgBox(ex.ToString & Environment.NewLine & "BF2 installation was not detected. Install it, please, from the CD via installator or from https://bf2.ministudios.ml.")
+            me.close()
         End Try
     End Sub
 
