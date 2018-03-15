@@ -224,7 +224,7 @@ Public Class main
     Private Sub main_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
         Dim osVer As Version = Environment.OSVersion.Version
         If osVer.Major = 5 And osVer.Minor = 1 Then
-            MsgBox("Windows XP isn't supported. You can download all files at https://dl.ministudios.ml/bf2", MsgBoxStyle.Critical, "OS isn't supported")
+            MsgBox("Windows XP isn't supported. You can download all files at https://dl.henryolik.ga/bf2", MsgBoxStyle.Critical, "OS isn't supported")
             Me.Close()
         End If
         If IsConnectionAvailable() = False Then
@@ -432,7 +432,7 @@ Public Class main
                 My.Settings.patch11 = True
                 If File.Exists(dloc & "/bf2patch_1.1.exe") Then
                     If getfilesha1(dloc & "/bf2patch_1.1.exe") = "f30c27ff0f1398c11c0065d415eb79c6def1ea2d" = False Then
-                        download("Patch 1.1", "https://dl.ministudios.ml/bf2/patches/bf2patch_1.1.exe", "bf2patch_1.1.exe")
+                        download("Patch 1.1", "https://dl.henryolik.ga/bf2/patches/bf2patch_1.1.exe", "bf2patch_1.1.exe")
                     Else
                         clb_updates.Items.RemoveAt(0)
                         clb_updates.Items.Insert(0, "Patch 1.1")
@@ -440,7 +440,7 @@ Public Class main
                         predl()
                     End If
                 Else
-                    download("Patch 1.1", "https://dl.ministudios.ml/bf2/patches/bf2patch_1.1.exe", "bf2patch_1.1.exe")
+                    download("Patch 1.1", "https://dl.henryolik.ga/bf2/patches/bf2patch_1.1.exe", "bf2patch_1.1.exe")
                 End If
                 clb_updates.Items.RemoveAt(0)
                 clb_updates.Items.Insert(0, "Patch 1.1")
@@ -449,7 +449,7 @@ Public Class main
                     My.Settings.patch141 = True
                     If File.Exists(dloc & "/bf2patch_1.41.exe") Then
                         If getfilesha1(dloc & "/bf2patch_1.41.exe") = "4956f67dbe8873d20f40f87e051f08170420e164" = False Then
-                            download("Patch 1.41", "https://dl.ministudios.ml/bf2/patches/bf2patch_1.41.exe", "bf2patch_1.41.exe")
+                            download("Patch 1.41", "https://dl.henryolik.ga/bf2/patches/bf2patch_1.41.exe", "bf2patch_1.41.exe")
                         Else
                             clb_updates.Items.RemoveAt(1)
                             clb_updates.Items.Insert(1, "Patch 1.41")
@@ -457,7 +457,7 @@ Public Class main
                             predl()
                         End If
                     Else
-                        download("Patch 1.41", "https://dl.ministudios.ml/bf2/patches/bf2patch_1.41.exe", "bf2patch_1.41.exe")
+                        download("Patch 1.41", "https://dl.henryolik.ga/bf2/patches/bf2patch_1.41.exe", "bf2patch_1.41.exe")
                     End If
                     clb_updates.Items.RemoveAt(1)
                     clb_updates.Items.Insert(1, "Patch 1.41")
@@ -466,7 +466,7 @@ Public Class main
                         My.Settings.patch150 = True
                         If File.Exists(dloc & "/bf2patch_1.50.exe") Then
                             If getfilesha1(dloc & "/bf2patch_1.50.exe") = "578e66b5695723ce375f52bef780d853220734cc" = False Then
-                                download("Patch 1.50", "https://dl.ministudios.ml/bf2/patches/bf2patch_1.50.exe", "bf2patch_1.50.exe")
+                                download("Patch 1.50", "https://dl.henryolik.ga/bf2/patches/bf2patch_1.50.exe", "bf2patch_1.50.exe")
                             Else
                                 clb_updates.Items.RemoveAt(2)
                                 clb_updates.Items.Insert(2, "Patch 1.50")
@@ -474,7 +474,7 @@ Public Class main
                                 predl()
                             End If
                         Else
-                            download("Patch 1.50", "https://dl.ministudios.ml/bf2/patches/bf2patch_1.50.exe", "bf2patch_1.50.exe")
+                            download("Patch 1.50", "https://dl.henryolik.ga/bf2/patches/bf2patch_1.50.exe", "bf2patch_1.50.exe")
                         End If
                         clb_updates.Items.RemoveAt(2)
                         clb_updates.Items.Insert(2, "Patch 1.50")
@@ -500,7 +500,7 @@ Public Class main
                                 My.Settings.atf = True
                                 If File.Exists(dloc & "/RendDX9.dll") Then
                                     If getfilesha1(dloc & "/RendDX9.dll") = "5f92d7dfdf36ba3b1f5feab7228a90c4fc331764" = False Then
-                                        download("Alt+Tab Fix", "https://dl.ministudios.ml/bf2/RendDX9.dll", "RendDX9.dll")
+                                        download("Alt+Tab Fix", "https://dl.henryolik.ga/bf2/RendDX9.dll", "RendDX9.dll")
                                     Else
                                         clb_updates.Items.RemoveAt(4)
                                         clb_updates.Items.Insert(4, "Alt+Tab Fix")
@@ -508,7 +508,7 @@ Public Class main
                                         predl()
                                     End If
                                 Else
-                                    download("Alt+Tab Fix", "https://dl.ministudios.ml/bf2/RendDX9.dll", "RendDX9.dll")
+                                    download("Alt+Tab Fix", "https://dl.henryolik.ga/bf2/RendDX9.dll", "RendDX9.dll")
                                 End If
                                 clb_updates.Items.RemoveAt(4)
                                 clb_updates.Items.Insert(4, "Alt+Tab Fix")
@@ -517,7 +517,7 @@ Public Class main
                                     My.Settings.dx = True
                                     If File.Exists(dloc & "/dxsetup.exe") Then
                                         If getfilesha1(dloc & "/dxsetup.exe") = "f8f1217f666bf2f6863631a7d5e5fb3a8d1542df" = False Then
-                                            download("DirectX 9.0c", "https://dl.ministudios.ml/bf2/dxsetup.exe", "dxsetup.exe")
+                                            download("DirectX 9.0c", "https://dl.henryolik.ga/bf2/dxsetup.exe", "dxsetup.exe")
                                         Else
                                             clb_updates.Items.RemoveAt(5)
                                             clb_updates.Items.Insert(5, "DirectX 9.0c")
@@ -525,7 +525,7 @@ Public Class main
                                             predl()
                                         End If
                                     Else
-                                        download("DirectX 9.0c", "https://dl.ministudios.ml/bf2/dxsetup.exe", "dxsetup.exe")
+                                        download("DirectX 9.0c", "https://dl.henryolik.ga/bf2/dxsetup.exe", "dxsetup.exe")
                                     End If
                                     clb_updates.Items.RemoveAt(5)
                                     clb_updates.Items.Insert(5, "DirectX 9.0c")
@@ -594,7 +594,7 @@ Public Class main
         End If
         Dim wc As WebClient = New WebClient()
         If IsConnectionAvailable() = True Then
-            wc.DownloadFile("https://dl.ministudios.ml/bf2/updater/version.txt", version)
+            wc.DownloadFile("https://dl.henryolik.ga/bf2/updater/version.txt", version)
         End If
         Dim LastVer As String = My.Computer.FileSystem.ReadAllText(version)
         If Not MyVer = LastVer Then
@@ -604,7 +604,7 @@ Public Class main
                     My.Computer.FileSystem.DeleteFile(updater)
                 End If
                 If IsConnectionAvailable() = True Then
-                    wc.DownloadFile("https://dl.ministudios.ml/updater/updater.exe", updater)
+                    wc.DownloadFile("https://dl.henryolik.ga/updater/updater.exe", updater)
                 End If
                 Process.Start(updater, "-bf2 -e:" & """" & Application.ExecutablePath & """")
                 Me.Close()
@@ -613,7 +613,7 @@ Public Class main
     End Sub
 
     Public Function IsConnectionAvailable() As Boolean
-        Dim objUrl As New System.Uri("https://dl.ministudios.ml/status.txt")
+        Dim objUrl As New System.Uri("https://dl.henryolik.ga/status.txt")
         Dim objWebReq As System.Net.WebRequest
         objWebReq = System.Net.WebRequest.Create(objUrl)
         Dim objResp As System.Net.WebResponse
