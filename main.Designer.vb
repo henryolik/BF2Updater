@@ -122,9 +122,9 @@ Partial Class main
         'bu_start
         '
         Me.bu_start.Font = New System.Drawing.Font("Microsoft Sans Serif", 36.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(238, Byte))
-        Me.bu_start.Location = New System.Drawing.Point(202, 132)
+        Me.bu_start.Location = New System.Drawing.Point(213, 132)
         Me.bu_start.Name = "bu_start"
-        Me.bu_start.Size = New System.Drawing.Size(356, 109)
+        Me.bu_start.Size = New System.Drawing.Size(345, 109)
         Me.bu_start.TabIndex = 7
         Me.bu_start.Text = "START"
         Me.bu_start.UseVisualStyleBackColor = True
@@ -191,7 +191,7 @@ Partial Class main
         'la_pb
         '
         Me.la_pb.AutoSize = True
-        Me.la_pb.ForeColor = System.Drawing.Color.Red
+        Me.la_pb.ForeColor = System.Drawing.Color.Orange
         Me.la_pb.Location = New System.Drawing.Point(104, 225)
         Me.la_pb.Name = "la_pb"
         Me.la_pb.Size = New System.Drawing.Size(84, 13)
