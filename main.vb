@@ -5,12 +5,56 @@ Imports System.Security.Cryptography
 Imports System.Net
 Imports System.Threading.Tasks
 
+'Semi-rewritten, not complete yet
+
 Public Class main
+
     Public dloc As String
     Dim SW As Stopwatch
     Dim dl As Boolean
-    Dim bf2ver As String = "Unknown"
-    Private Sub AboutToolStripMenuItem_Click(sender As System.Object, e As System.EventArgs) Handles mi_about.Click
+    Dim dlcomp As Boolean
+    Dim dlistxt As String = Path.GetTempPath & "/BF2Updater/dlist.txt"
+    Dim wc As WebClient = New WebClient
+
+    Sub init()
+        Dim appname As String = System.Reflection.Assembly.GetExecutingAssembly.GetName().Name
+        Dim appver As String = My.Application.Info.Version.ToString
+        Dim app As String = appname & " v" & appver
+        Me.Text = app
+    End Sub
+
+    Private Sub main_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
+        init()
+        Dim osVer As Version = Environment.OSVersion.Version
+        If osVer.Major < 6 Then
+            MsgBox("Your OS isn't supported. But don't worry. You can download all files at https://dl.henryolik.ga/bf2", MsgBoxStyle.Critical, "OS isn't supported")
+            Me.Close()
+        End If
+        If Directory.Exists(Path.GetTempPath & "BF2Updater") = True Then
+            If File.Exists(Path.GetTempPath & "BF2Updater\dloc.txt") = True AndAlso File.ReadAllText(Path.GetTempPath & "BF2Updater\dloc.txt") = Nothing = False Then
+                tb_dloc.Text = File.ReadAllText(Path.GetTempPath & "BF2Updater\dloc.txt")
+                dloc = File.ReadAllText(Path.GetTempPath & "BF2Updater\dloc.txt")
+            Else
+                tb_dloc.Text = Path.GetTempPath & "BF2Updater\dl"
+                dloc = Path.GetTempPath & "BF2Updater/dl"
+            End If
+        Else
+            tb_dloc.Text = Path.GetTempPath & "BF2Updater\dl"
+            dloc = Path.GetTempPath & "BF2Updater\dl"
+        End If
+        If IsConnectionAvailable() = False Then
+            'this is going away soon :)
+            MsgBox("Connection isn't available! Please check your internet connection and try again.", MsgBoxStyle.Critical, "Error")
+            Me.Close()
+        Else
+            CheckForUpdates()
+            msg()
+        End If
+        check()
+        locate()
+    End Sub
+
+    Private Sub mi_about_Click(sender As System.Object, e As System.EventArgs) Handles mi_about.Click
         about.Show()
     End Sub
 
@@ -22,17 +66,16 @@ Public Class main
             folder = regkey.GetValue("InstallLocation")
             tb_loc.Text = folder
             If My.Computer.FileSystem.DirectoryExists(tb_loc.Text) = False Then
-                MsgBox("BF2 folder was not found! Please, install the game via installator.")
+                MsgBox("BF2 folder was not found! Please, install the game properly and try again.")
                 Me.Close()
             End If
         Catch ex As Exception
-            MsgBox("BF2 installation was not detected. Install it, please, via installator." & Environment.NewLine & ex.ToString)
+            MsgBox("BF2 installation was not detected. Install it properly and try again." & Environment.NewLine & ex.ToString)
             Me.Close()
         End Try
     End Sub
 
-    Public Sub check()
-        Dim bf2hub As Integer = 0
+    Sub check()
         pb_load.Minimum = 0
         pb_load.Maximum = 100
         'Check for DX9.0c
@@ -46,131 +89,59 @@ Public Class main
         End If
         'Check for BF2 version
         Dim bf2exe_sha1 As String = getfilesha1(tb_loc.Text & "/BF2.exe")
-        If bf2exe_sha1 = "c3bd54bbf23a3b727ae245b14784e3dbd78c525f" Then
-            bf2ver = "1.0/1.01"
+        Dim getver As String = gethash(bf2exe_sha1)
+        Dim bf2hub As Boolean = False
+        If getver.IndexOf(2) = 0 Then
+            bf2hub = True
         End If
-        If bf2exe_sha1 = "cad18ce137511bd28701a83c8193098415e35dcf" Then
-            bf2ver = "1.0/1.01 BF2Hub"
-            bf2hub = 100
-        End If
-        If bf2exe_sha1 = "72515c2641ea4e241b252eefd9fbaee0f33cbb38" Then
-            bf2ver = "1.03"
-        End If
-        If bf2exe_sha1 = "924edc8ee2c7dea24acb8a3489e9328bfdd773ef" Then
-            bf2ver = "1.03 BF2Hub"
-            bf2hub = 103
-        End If
-        If bf2exe_sha1 = "30a0071d82a42c2d7e908069b58dbc40d7f1699b" Then
-            bf2ver = "1.1"
+        Dim bf2ver As Integer = getver.Substring(1)
+        If bf2ver >= 110 Then
             la_11.Text = "INSTALLED!"
             la_11.ForeColor = Color.Green
         End If
-        If bf2exe_sha1 = "0ba2bcef97513a1cc770f8bd383e198c43612642" Then
-            bf2ver = "1.12"
-            la_11.Text = "INSTALLED!"
-            la_11.ForeColor = Color.Green
-        End If
-        If bf2exe_sha1 = "687a6945328dddbedadede4b7a8d575cccab4802" Then
-            bf2ver = "1.12 BF2Hub"
-            la_11.Text = "INSTALLED!"
-            la_11.ForeColor = Color.Green
-            bf2hub = 112
-        End If
-        If bf2exe_sha1 = "243527754c7aa03bb5af43c6308ab89753ce510f" Then
-            bf2ver = "1.2"
-            la_11.Text = "INSTALLED!"
-            la_11.ForeColor = Color.Green
-        End If
-        If bf2exe_sha1 = "8afa4a0febfcf2b9a4aa6177fa51c33902ec4f6d" Then
-            bf2ver = "1.21"
-            la_11.Text = "INSTALLED!"
-            la_11.ForeColor = Color.Green
-        End If
-        If bf2exe_sha1 = "786b41c4660b62fd42fe9935a12fe815dd23a80b" Then
-            bf2ver = "1.22"
-            la_11.Text = "INSTALLED!"
-            la_11.ForeColor = Color.Green
-        End If
-        If bf2exe_sha1 = "6197bfc5310b86bbf0ecffb96e308cadf9fa52f0" Then
-            bf2ver = "1.3"
-            la_11.Text = "INSTALLED!"
-            la_11.ForeColor = Color.Green
-        End If
-        If bf2exe_sha1 = "d8506080cb0c86ac148e068fcd3ce5855cf2d664" Then
-            bf2ver = "1.3 BF2Hub"
-            la_11.Text = "INSTALLED!"
-            la_11.ForeColor = Color.Green
-            bf2hub = 130
-        End If
-        If bf2exe_sha1 = "6c2224b348b90710624607c24af7aa78f2204536" Then
-            bf2ver = "1.4"
-            la_11.Text = "INSTALLED!"
-            la_11.ForeColor = Color.Green
-        End If
-        If bf2exe_sha1 = "2ed07d5dcea4a56c6336ad351c8d9a1e179430ef" Then
-            bf2ver = "1.4 BF2Hub"
-            la_11.Text = "INSTALLED!"
-            la_11.ForeColor = Color.Green
-            bf2hub = 140
-        End If
-        If bf2exe_sha1 = "85b27c0ee23cc3a1a67e1c2fe66ff4049e40fa42" Then
-            bf2ver = "1.41"
-            la_11.Text = "INSTALLED!"
-            la_11.ForeColor = Color.Green
+        If bf2ver >= 141 Then
             la_141.Text = "INSTALLED!"
             la_141.ForeColor = Color.Green
         End If
-        If bf2exe_sha1 = "711cc7a0703eb1812760d0ff706d681ae54689ac" Then
-            bf2ver = "1.41 BF2Hub"
-            la_11.Text = "INSTALLED!"
-            la_11.ForeColor = Color.Green
-            la_141.Text = "INSTALLED!"
-            la_141.ForeColor = Color.Green
-            bf2hub = 141
-        End If
-        If bf2exe_sha1 = "3681849f05f6963223c74d98066fbbc9b8520a15" Then
-            bf2ver = "1.50"
-            la_11.Text = "INSTALLED!"
-            la_11.ForeColor = Color.Green
-            la_141.Text = "INSTALLED!"
-            la_141.ForeColor = Color.Green
+        If bf2ver >= 150 Then
             la_150.Text = "INSTALLED!"
             la_150.ForeColor = Color.Green
         End If
-        If bf2exe_sha1 = "aa5d39541c6dcda42f766eefead02ebbbcb10525" Or bf2exe_sha1 = "8f425b9c73d868a3ca56d157abc99f3c3f560c8d" Then
-            bf2ver = "1.50 BF2Hub"
-            la_11.Text = "INSTALLED!"
-            la_11.ForeColor = Color.Green
-            la_141.Text = "INSTALLED!"
-            la_141.ForeColor = Color.Green
-            la_150.Text = "INSTALLED!"
-            la_150.ForeColor = Color.Green
-            bf2hub = 150
+        Dim sb As New System.Text.StringBuilder(bf2ver.ToString)
+        For x As Integer = sb.Length - 2 To 1 Step -1
+            sb.Insert(x, ".")
+        Next
+        Dim dispverwoext As String = sb.ToString
+        Dim dispver As String
+        Dim revive As Boolean
+        If dispverwoext = "1.51" Then
+            revive = True
+            dispverwoext = "1.50"
         End If
-        If bf2exe_sha1 = "d3c0cd56f39b5fd2dbf99f6c5c4fe4719b79f3f5" Then
-            bf2ver = "1.50 Revive"
-            la_11.Text = "INSTALLED!"
-            la_11.ForeColor = Color.Green
-            la_141.Text = "INSTALLED!"
-            la_141.ForeColor = Color.Green
-            la_150.Text = "INSTALLED!"
-            la_150.ForeColor = Color.Green
+        If bf2hub = True Then
+            dispver = dispverwoext & " BF2Hub"
+        Else
+            If revive = True Then
+                dispver = dispverwoext & " Revive"
+            Else
+                dispver = dispverwoext
+            End If
         End If
-        la_version.Text = "Detected BF2 version: " & bf2ver
+        la_version.Text = "Detected BF2 version: " & dispver
         'Check for BF2Hub
         If Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles) & "/BF2Hub Client") AndAlso File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles) & "/BF2Hub Client/bf2hub.exe") Then
-            If bf2hub < 150 And bf2hub = 0 = False Then
+            If bf2ver < 150 And bf2hub = True Then
                 la_bf2hub.Text = "INSTALLED, OLD PATCH"
                 la_bf2hub.ForeColor = Color.Orange
                 tt_main.SetToolTip(la_bf2hub, "Make sure you have installed patch 1.50 and run BF2Hub")
                 la_bf2hub.Font = New Font("Microsoft Sans Serif", 6)
                 la_bf2hub.Location = New Point(la_bf2hub.Location.X, la_bf2hub.Location.Y + 3)
             End If
-            If bf2hub = 150 Then
+            If bf2ver >= 150 And bf2hub = True Then
                 la_bf2hub.Text = "INSTALLED!"
                 la_bf2hub.ForeColor = Color.Green
             End If
-            If bf2hub = 0 Then
+            If bf2hub = False Then
                 la_bf2hub.Text = "INSTALLED, NOT PATCHED"
                 la_bf2hub.ForeColor = Color.Orange
                 tt_main.SetToolTip(la_bf2hub, "Run BF2Hub")
@@ -178,24 +149,24 @@ Public Class main
                 la_bf2hub.Location = New Point(la_bf2hub.Location.X, la_bf2hub.Location.Y + 3)
             End If
         Else
-            If bf2hub = 150 Then
+            If bf2ver >= 150 And bf2hub = True Then
                 la_bf2hub.Text = "NOT INSTALLED, PATCHED"
                 la_bf2hub.ForeColor = Color.Orange
                 tt_main.SetToolTip(la_bf2hub, "Install BF2Hub to keep your game up to date")
                 la_bf2hub.Font = New Font("Microsoft Sans Serif", 6)
                 la_bf2hub.Location = New Point(la_bf2hub.Location.X, la_bf2hub.Location.Y + 3)
             End If
-            If bf2hub < 150 And bf2hub = 0 = False Then
+            If bf2hub < 150 And bf2hub = True Then
                 la_bf2hub.Text = "NOT INSTALLED, OLD PATCH"
-                la_bf2hub.ForeColor = Color.Orange
+                la_bf2hub.ForeColor = Color.Red
                 tt_main.SetToolTip(la_bf2hub, "Make sure you have patch 1.50 installed and install and run BF2Hub")
                 la_bf2hub.Font = New Font("Microsoft Sans Serif", 6)
                 la_bf2hub.Location = New Point(la_bf2hub.Location.X, la_bf2hub.Location.Y + 3)
             End If
         End If
-        'Check for Alt+Tab fix
+        'Check for Alt+Tab Fix
         Dim alttab_sha1 As String = getfilesha1(tb_loc.Text & "/RendDX9.dll")
-        If alttab_sha1 = "5f92d7dfdf36ba3b1f5feab7228a90c4fc331764" Then
+        If alttab_sha1 = gethash("Alt+Tab Fix") Then
             la_atf.Text = "INSTALLED!"
             la_atf.ForeColor = Color.Green
         End If
@@ -210,79 +181,128 @@ Public Class main
         Next
     End Sub
 
-    Private Sub bu_click(sender As System.Object, e As System.EventArgs) Handles bu_start.Click
-        If clb_updates.CheckedItems.Count = 0 Then
-            MsgBox("No update is selected!")
-            enable()
-        Else
-            If MsgBox("Do you want to install checked updates?", MsgBoxStyle.YesNo, "Install") = MsgBoxResult.Yes Then
-                predl()
-            End If
-        End If
-    End Sub
-
-    Private Sub main_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
+    Public Sub msg()
+        Dim MyVer As String = My.Application.Info.Version.ToString
         Dim osVer As Version = Environment.OSVersion.Version
-        If osVer.Major = 5 And osVer.Minor = 1 Then
-            MsgBox("Windows XP isn't supported. You can download all files at https://dl.henryolik.ga/bf2", MsgBoxStyle.Critical, "OS isn't supported")
-            Me.Close()
+        Dim wc As WebClient = New WebClient()
+        Dim os As String = Nothing
+        If osVer.Major = 6 And osVer.Minor = 0 Then
+            os = "vista"
         End If
-        If IsConnectionAvailable() = False Then
-            MsgBox("Connection isn't available! Please check your internet connection and try again.", MsgBoxStyle.Critical, "Error")
-            Me.Close()
-        Else
-            CheckForUpdates()
+        If osVer.Major = 6 And osVer.Minor = 1 Then
+            os = "7"
         End If
-        check()
-        locate()
-        If Directory.Exists(Path.GetTempPath & "BF2Updater") = True Then
-            If File.Exists(Path.GetTempPath & "BF2Updater\dloc.txt") = True AndAlso File.ReadAllText(Path.GetTempPath & "BF2Updater\dloc.txt") = Nothing = False Then
-                tb_dloc.Text = File.ReadAllText(Path.GetTempPath & "BF2Updater\dloc.txt")
-                dloc = File.ReadAllText(Path.GetTempPath & "BF2Updater\dloc.txt")
+        If osVer.Major = 6 And osVer.Minor = 2 Then
+            If My.Computer.Info.OSFullName.Contains("10") Then
+                os = "10"
             Else
-                tb_dloc.Text = Path.GetTempPath & "BF2Updater\dl"
-                dloc = Path.GetTempPath & "BF2Updater/dl"
+                If My.Computer.Info.OSFullName.Contains("8.1") Then
+                    os = "8.1"
+                Else
+                    os = "8"
+                End If
             End If
-        Else
-            tb_dloc.Text = Path.GetTempPath & "BF2Updater\dl"
-            dloc = Path.GetTempPath & "BF2Updater\dl"
+        End If
+        If Not os = Nothing Then
+            Dim msg As String = Application.StartupPath & "/msg.txt"
+            wc.DownloadFile(New Uri("https://dl.henryolik.ga/bf2/updater/msgs/" & MyVer & "/" & os & ".txt"), msg)
+            If Not My.Computer.FileSystem.ReadAllText(msg) = "" Then
+                MsgBox(My.Computer.FileSystem.ReadAllText(msg), MsgBoxStyle.Information, "Message")
+            End If
         End If
     End Sub
 
-    Function getfilesha1(ByVal file_name As String)
-        If My.Computer.FileSystem.FileExists(file_name) = False Then
-            Return Nothing
-        Else
-            Dim hash = SHA1.Create
-            Dim hashValue() As Byte
-            Dim fileStream As IO.FileStream = File.OpenRead(file_name)
-            fileStream.Position = 0
-            hashValue = hash.ComputeHash(fileStream)
-            Dim hash_hex = PrintByteArray(hashValue)
-            fileStream.Close()
-            Return hash_hex
+    Public Sub CheckForUpdates()
+        If Directory.Exists(IO.Path.GetTempPath & "BF2Updater") = False Then
+            Directory.CreateDirectory(IO.Path.GetTempPath & "BF2Updater")
         End If
+        Dim version As String = IO.Path.GetTempPath & "BF2Updater/version.txt"
+        Dim updater As String = IO.Path.GetTempPath & "BF2Updater/updater.exe"
+        Dim MyVer As String = My.Application.Info.Version.ToString
+        wc.DownloadFile("https://dl.henryolik.ga/f/bf2updaterver", version)
+        Dim LastVer As String = My.Computer.FileSystem.ReadAllText(version)
+        If Not MyVer = LastVer Then
+            Dim result As Integer = MessageBox.Show("An update is available! Do you want to download it?", "Update", MessageBoxButtons.YesNo)
+            If result = DialogResult.Yes Then
+                wc.DownloadFile("https://dl.henryolik.ga/f/updater", updater)
+                Process.Start(updater, "-bf2 -e:" & """" & Application.ExecutablePath & """")
+                Me.Close()
+            End If
+        End If
+    End Sub
+
+    Public Function IsConnectionAvailable() As Boolean
+        Dim objUrl As New System.Uri("https://dl.henryolik.ga/f/status")
+        Dim objWebReq As System.Net.WebRequest
+        objWebReq = System.Net.WebRequest.Create(objUrl)
+        Dim objResp As System.Net.WebResponse
+        Try
+            objResp = objWebReq.GetResponse
+            objResp.Close()
+            objWebReq = Nothing
+            Return True
+        Catch ex As Exception
+            objWebReq = Nothing
+            Return False
+        End Try
     End Function
 
-    Public Function PrintByteArray(ByVal array() As Byte)
-        Dim hex_value As String = ""
-        Dim i As Integer
-        For i = 0 To array.Length - 1
-            hex_value += array(i).ToString("X2")
-        Next i
-        Return hex_value.ToLower
-    End Function
-
-    Sub download(ByVal file As String, ByVal uri As String, ByVal ffile As String)
+    Sub download()
+        'this need more care
+        Dim down() As String = IO.File.ReadAllLines(Path.GetTempPath & "/BF2Updater/dlist.txt")
+        Dim data As String
+        If down.Length <= 0 Then
+            install()
+            Exit Sub
+        End If
+        If down(0) = "" AndAlso down.Length <= 1 Then
+            install()
+            Exit Sub
+        End If
+        data = down(0)
+        If down(0) = "" AndAlso down.Length > 1 Then
+            If down(down.Length - 1) = "" Then
+                install()
+                Exit Sub
+            Else
+                data = down(down.Length)
+            End If
+        End If
+        Dim file As String
+        Dim ffile As String
+        Dim uri As String
+        Dim items As String() = data.Split("|".ToCharArray())
+        file = items(0)
+        uri = items(1)
+        ffile = items(2)
         la_dl.Text = file
         SW = Stopwatch.StartNew
-        Dim client As WebClient = New WebClient
-        AddHandler client.DownloadProgressChanged, AddressOf download_change
-        AddHandler client.DownloadFileCompleted, AddressOf download_completed
+        AddHandler wc.DownloadProgressChanged, AddressOf download_change
+        AddHandler wc.DownloadFileCompleted, AddressOf download_completed
         If My.Computer.FileSystem.DirectoryExists(dloc) = False Then
             My.Computer.FileSystem.CreateDirectory(dloc)
         End If
-        client.DownloadFileAsync(New Uri(uri), dloc & "/" & ffile)
+        wc.DownloadFileAsync(New Uri(uri), dloc & "/" & ffile)
+        rml(Path.GetTempPath & "/BF2Updater/dlist.txt", 1)
+    End Sub
+
+    Public Sub rml(ByVal path As String, ByVal ln As Integer)
+        Dim tb As New TextBox
+        tb.Text = My.Computer.FileSystem.ReadAllText(path)
+        Dim str As New List(Of String)
+        Dim i As Integer = 0
+        For Each l In tb.Lines
+            str.Add(tb.Lines(i))
+            i += 1
+        Next
+        str.RemoveAt(ln - 1)
+        tb.Text = ""
+        For Each h In str
+            tb.Text = tb.Text & h & Environment.NewLine
+        Next
+        Dim writer As New System.IO.StreamWriter(path)
+        writer.Write(tb.Text)
+        writer.Close()
     End Sub
 
     Private Sub download_change(ByVal sender As Object, ByVal e As DownloadProgressChangedEventArgs)
@@ -348,212 +368,127 @@ Public Class main
 
             MessageBox.Show("There was an error downloading the file. Error: " & actualException.Message)
         Else
-            dl = True
             SW.Stop()
-            predl()
+            download()
         End If
     End Sub
 
-    Private Sub install()
-        la_dl.Text = "Installing..."
-        If My.Settings.patch11 = True Or My.Settings.patch141 = True Or My.Settings.patch150 = True Or My.Settings.bf2hub = True Or My.Settings.dx = True Or My.Settings.pb = True Then
-            MsgBox("Updates will now install. If you'll be prompted to restart your PC, choose restart later. It'll be better for everyone :)", MsgBoxStyle.Exclamation, "Warning")
-        End If
-        If My.Settings.patch11 = True Then
-            la_dl.Text = "Patch 1.1"
-            pb_load.Value = 50
-            Process.Start(dloc & "/bf2patch_1.1.exe").WaitForExit(3600000)
-            pb_load.Value = 100
-            My.Settings.patch11 = False
-        End If
-        If My.Settings.patch141 = True Then
-            la_dl.Text = "Patch 1.41"
-            pb_load.Value = 50
-            Process.Start(dloc & "/bf2patch_1.41.exe").WaitForExit(3600000)
-            My.Settings.patch141 = False
-            pb_load.Value = 100
-        End If
-        If My.Settings.patch150 = True Then
-            la_dl.Text = "Patch 1.50"
-            pb_load.Value = 50
-            Process.Start(dloc & "/bf2patch_1.50.exe").WaitForExit(3600000)
-            My.Settings.patch150 = False
-            pb_load.Value = 100
-        End If
-        If My.Settings.bf2hub = True Then
-            la_dl.Text = "BF2Hub"
-            pb_load.Value = 50
-            Process.Start(dloc & "/bf2hub_setup.exe").WaitForExit(3600000)
-            My.Settings.bf2hub = False
-            pb_load.Value = 100
-        End If
-        If My.Settings.atf = True Then
-            la_dl.Text = "Alt+Tab Fix"
-            pb_load.Value = 50
-            Dim regkey As RegistryKey
-            Dim folder As String
-            regkey = Registry.LocalMachine.OpenSubKey("SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{04858915-9F49-4B2A-AED4-DC49A7DE6A7B}", True)
-            folder = regkey.GetValue("InstallLocation")
-            If File.Exists(folder & "/RendDX9-backup.dll") = False Then
-                File.Copy(folder & "/RendDX9.dll", folder & "/RendDX9-backup.dll", True)
+    Sub predl()
+        la_dl.Text = "Checking for files, please wait..."
+        IO.File.Create(dlistxt).Close()
+        Using sw As StreamWriter = New StreamWriter(dlistxt)
+            sw.Write(Environment.NewLine)
+        End Using
+        pb_load.Value = 12
+        If clb_updates.CheckedItems.Contains("Patch 1.1") Then
+            My.Settings.patch11 = True
+            If getfilesha1(dloc & "/bf2patch_1.1.exe") = gethash("Patch 1.1") = False Then
+                dlist("Patch 1.1", "https://dl.henryolik.ga/f/bf2patch11", "bf2patch_1.1.exe")
             End If
-            File.Copy(dloc & "/RendDX9.dll", folder & "/RendDX9.dll", True)
-            My.Settings.atf = False
-            pb_load.Value = 100
         End If
-        If My.Settings.dx = True Then
-            la_dl.Text = "DirectX 9.0c"
-            pb_load.Value = 50
-            Process.Start(dloc & "/dxsetup.exe").WaitForExit(3600000)
-            My.Settings.dx = False
-            pb_load.Value = 100
+        pb_load.Value = 24
+        If clb_updates.CheckedItems.Contains("Patch 1.41") Then
+            My.Settings.patch141 = True
+            If getfilesha1(dloc & "/bf2patch_1.41.exe") = gethash("Patch 1.41") = False Then
+                dlist("Patch 1.41", "https://dl.henryolik.ga/f/bf2patch141", "bf2patch_1.41.exe")
+            End If
         End If
-        If My.Settings.pb = True Then
-            la_dl.Text = "PunkBuster"
-            pb_load.Value = 50
-            Process.Start(dloc & "/pbsvc.exe").WaitForExit(3600000)
-            My.Settings.pb = False
-            pb_load.Value = 100
+        pb_load.Value = 36
+        If clb_updates.CheckedItems.Contains("Patch 1.50") Then
+            My.Settings.patch150 = True
+            If getfilesha1(dloc & "/bf2patch_1.50.exe") = gethash("Patch 1.50") = False Then
+                dlist("Patch 1.50", "https://dl.henryolik.ga/f/bf2patch150", "bf2patch_1.50.exe")
+            End If
         End If
-        enable()
-        check()
-        MsgBox("Done!")
+        pb_load.Value = 48
+        If clb_updates.CheckedItems.Contains("BF2Hub") Then
+            My.Settings.bf2hub = True
+            If getfilesha1(dloc & "/bf2hub_setup.exe") = gethash("BF2Hub") = False Then
+                dlist("BF2Hub", "https://dl.henryolik.ga/f/bf2hub", "bf2hub_setup.exe")
+            End If
+        End If
+        pb_load.Value = 60
+        If clb_updates.CheckedItems.Contains("Alt+Tab Fix") Then
+            My.Settings.atf = True
+            If getfilesha1(dloc & "/RendDX9.dll") = gethash("Alt+Tab Fix") = False Then
+                dlist("Alt+Tab Fix", "https://dl.henryolik.ga/f/bf2alttabfix", "RendDX9.dll")
+            End If
+        End If
+        pb_load.Value = 72
+        If clb_updates.CheckedItems.Contains("DirectX 9.0c") Then
+            My.Settings.dx = True
+            If getfilesha1(dloc & "/dxsetup.exe") = gethash("DirectX 9.0c") = False Then
+                dlist("DirectX 9.0c", "https://dl.henryolik.ga/f/dx90c", "dxsetup.exe")
+            End If
+        End If
+        pb_load.Value = 84
+        If clb_updates.CheckedItems.Contains("PunkBuster") Then
+            My.Settings.pb = True
+            If getfilesha1(dloc & "/pbsvc.exe") = gethash("PunkBuster") = False Then
+                dlist("PunkBuster", "https://dl.henryolik.ga/f/punkbuster", "pbsvc.exe")
+            End If
+        End If
+        pb_load.Value = 100
+        download()
     End Sub
 
-    Private Sub predl()
-        If clb_updates.CheckedItems.Count = 0 And dl = True Then
-            disable()
-            install()
+    Sub dlist(ByVal file As String, ByVal uri As String, ByVal ffile As String)
+        Dim lines() As String = IO.File.ReadAllLines(dlistxt)
+        Dim count As Integer
+        count = lines.Length - 1
+        Try
+            lines(count) = file & "|" & uri & "|" & ffile & Environment.NewLine
+            IO.File.WriteAllLines(dlistxt, lines)
+        Catch ex As Exception
+            MsgBox("Error!" & Environment.NewLine & ex.ToString)
+        End Try
+    End Sub
+
+    Function getfilesha1(ByVal file_name As String)
+        If My.Computer.FileSystem.FileExists(file_name) = False Then
+            Return Nothing
         Else
-            disable()
-            la_dl.Text = "Checking for files..."
-            dl = False
-            If clb_updates.CheckedItems.Contains("Patch 1.1") Then
-                My.Settings.patch11 = True
-                If File.Exists(dloc & "/bf2patch_1.1.exe") Then
-                    If getfilesha1(dloc & "/bf2patch_1.1.exe") = "f30c27ff0f1398c11c0065d415eb79c6def1ea2d" = False Then
-                        download("Patch 1.1", "https://dl.henryolik.ga/bf2/patches/bf2patch_1.1.exe", "bf2patch_1.1.exe")
-                    Else
-                        clb_updates.Items.RemoveAt(0)
-                        clb_updates.Items.Insert(0, "Patch 1.1")
-                        dl = True
-                        predl()
-                    End If
-                Else
-                    download("Patch 1.1", "https://dl.henryolik.ga/bf2/patches/bf2patch_1.1.exe", "bf2patch_1.1.exe")
-                End If
-                clb_updates.Items.RemoveAt(0)
-                clb_updates.Items.Insert(0, "Patch 1.1")
-            Else
-                If clb_updates.CheckedItems.Contains("Patch 1.41") Then
-                    My.Settings.patch141 = True
-                    If File.Exists(dloc & "/bf2patch_1.41.exe") Then
-                        If getfilesha1(dloc & "/bf2patch_1.41.exe") = "4956f67dbe8873d20f40f87e051f08170420e164" = False Then
-                            download("Patch 1.41", "https://dl.henryolik.ga/bf2/patches/bf2patch_1.41.exe", "bf2patch_1.41.exe")
-                        Else
-                            clb_updates.Items.RemoveAt(1)
-                            clb_updates.Items.Insert(1, "Patch 1.41")
-                            dl = True
-                            predl()
-                        End If
-                    Else
-                        download("Patch 1.41", "https://dl.henryolik.ga/bf2/patches/bf2patch_1.41.exe", "bf2patch_1.41.exe")
-                    End If
-                    clb_updates.Items.RemoveAt(1)
-                    clb_updates.Items.Insert(1, "Patch 1.41")
-                Else
-                    If clb_updates.CheckedItems.Contains("Patch 1.50") Then
-                        My.Settings.patch150 = True
-                        If File.Exists(dloc & "/bf2patch_1.50.exe") Then
-                            If getfilesha1(dloc & "/bf2patch_1.50.exe") = "578e66b5695723ce375f52bef780d853220734cc" = False Then
-                                download("Patch 1.50", "https://dl.henryolik.ga/bf2/patches/bf2patch_1.50.exe", "bf2patch_1.50.exe")
-                            Else
-                                clb_updates.Items.RemoveAt(2)
-                                clb_updates.Items.Insert(2, "Patch 1.50")
-                                dl = True
-                                predl()
-                            End If
-                        Else
-                            download("Patch 1.50", "https://dl.henryolik.ga/bf2/patches/bf2patch_1.50.exe", "bf2patch_1.50.exe")
-                        End If
-                        clb_updates.Items.RemoveAt(2)
-                        clb_updates.Items.Insert(2, "Patch 1.50")
-                    Else
-                        If clb_updates.CheckedItems.Contains("BF2Hub") Then
-                            My.Settings.bf2hub = True
-                            If File.Exists(dloc & "/bf2hub_setup.exe") Then
-                                If getfilesha1(dloc & "/bf2hub_setup.exe") = "92b6fc5af14c7b20d0a909b19570ae3337b89193" = False Then
-                                    download("BF2Hub", "https://www.bf2hub.com/downloads/bf2hub-client-setup.exe", "bf2hub_setup.exe")
-                                Else
-                                    clb_updates.Items.RemoveAt(3)
-                                    clb_updates.Items.Insert(3, "BF2Hub")
-                                    dl = True
-                                    predl()
-                                End If
-                            Else
-                                download("BF2Hub", "https://www.bf2hub.com/downloads/bf2hub-client-setup.exe", "bf2hub_setup.exe")
-                            End If
-                            clb_updates.Items.RemoveAt(3)
-                            clb_updates.Items.Insert(3, "BF2hub")
-                        Else
-                            If clb_updates.CheckedItems.Contains("Alt+Tab Fix") Then
-                                My.Settings.atf = True
-                                If File.Exists(dloc & "/RendDX9.dll") Then
-                                    If getfilesha1(dloc & "/RendDX9.dll") = "5f92d7dfdf36ba3b1f5feab7228a90c4fc331764" = False Then
-                                        download("Alt+Tab Fix", "https://dl.henryolik.ga/bf2/RendDX9.dll", "RendDX9.dll")
-                                    Else
-                                        clb_updates.Items.RemoveAt(4)
-                                        clb_updates.Items.Insert(4, "Alt+Tab Fix")
-                                        dl = True
-                                        predl()
-                                    End If
-                                Else
-                                    download("Alt+Tab Fix", "https://dl.henryolik.ga/bf2/RendDX9.dll", "RendDX9.dll")
-                                End If
-                                clb_updates.Items.RemoveAt(4)
-                                clb_updates.Items.Insert(4, "Alt+Tab Fix")
-                            Else
-                                If clb_updates.CheckedItems.Contains("DirectX 9.0c") Then
-                                    My.Settings.dx = True
-                                    If File.Exists(dloc & "/dxsetup.exe") Then
-                                        If getfilesha1(dloc & "/dxsetup.exe") = "f8f1217f666bf2f6863631a7d5e5fb3a8d1542df" = False Then
-                                            download("DirectX 9.0c", "https://dl.henryolik.ga/bf2/dxsetup.exe", "dxsetup.exe")
-                                        Else
-                                            clb_updates.Items.RemoveAt(5)
-                                            clb_updates.Items.Insert(5, "DirectX 9.0c")
-                                            dl = True
-                                            predl()
-                                        End If
-                                    Else
-                                        download("DirectX 9.0c", "https://dl.henryolik.ga/bf2/dxsetup.exe", "dxsetup.exe")
-                                    End If
-                                    clb_updates.Items.RemoveAt(5)
-                                    clb_updates.Items.Insert(5, "DirectX 9.0c")
-                                Else
-                                    If clb_updates.CheckedItems.Contains("PunkBuster") Then
-                                        My.Settings.pb = True
-                                        If File.Exists(dloc & "/pbsvc.exe") Then
-                                            If getfilesha1(dloc & "/pbsvc.exe") = "dbc4aa6f3bebd60310bd53c52691df401b9b4ea1" = False Then
-                                                download("PunkBuster", "https://www.evenbalance.com/downloads/pbsvc/pbsvc.exe", "pbsvc.exe")
-                                            Else
-                                                clb_updates.Items.RemoveAt(6)
-                                                clb_updates.Items.Insert(6, "PunkBuster")
-                                                dl = True
-                                                predl()
-                                            End If
-                                        Else
-                                            download("PunkBuster", "https://www.evenbalance.com/downloads/pbsvc/pbsvc.exe", "pbsvc.exe")
-                                        End If
-                                        clb_updates.Items.RemoveAt(6)
-                                        clb_updates.Items.Insert(6, "PunkBuster")
-                                    End If
-                                End If
-                            End If
-                        End If
-                    End If
-                End If
+            Dim hash = SHA1.Create
+            Dim hashValue() As Byte
+            Dim fileStream As IO.FileStream = File.OpenRead(file_name)
+            fileStream.Position = 0
+            hashValue = hash.ComputeHash(fileStream)
+            Dim hash_hex = PrintByteArray(hashValue)
+            fileStream.Close()
+            Return hash_hex
+        End If
+    End Function
+
+    Public Function PrintByteArray(ByVal array() As Byte)
+        Dim hex_value As String = ""
+        Dim i As Integer
+        For i = 0 To array.Length - 1
+            hex_value += array(i).ToString("X2")
+        Next i
+        Return hex_value.ToLower
+    End Function
+
+    Private Sub bu_start_Click(sender As System.Object, e As System.EventArgs) Handles bu_start.Click
+        disable()
+        If clb_updates.CheckedItems.Count = 0 Then
+            MsgBox("No update is selected!")
+            enable()
+        Else
+            If MsgBox("Do you want to install checked updates?", MsgBoxStyle.YesNo, "Install") = MsgBoxResult.Yes Then
+                predl()
             End If
         End If
+    End Sub
+
+    Sub install()
+        Dim i As Integer = -1
+        Do Until i = 6
+            i = i + 1
+            clb_updates.SetItemChecked(i, False)
+        Loop
+        enable()
+        MsgBox("Download complete!")
+        'soon :)
     End Sub
 
     Public Sub enable()
@@ -582,51 +517,35 @@ Public Class main
         tb_dloc.Enabled = False
     End Sub
 
-    Public Sub CheckForUpdates()
-        If Directory.Exists(IO.Path.GetTempPath & "BF2Updater") = False Then
-            Directory.CreateDirectory(IO.Path.GetTempPath & "BF2Updater")
-        End If
-        Dim version As String = IO.Path.GetTempPath & "BF2Updater/version.txt"
-        Dim updater As String = IO.Path.GetTempPath & "BF2Updater/updater.exe"
-        Dim MyVer As String = My.Application.Info.Version.ToString
-        If My.Computer.FileSystem.FileExists(version) Then
-            My.Computer.FileSystem.DeleteFile(version)
-        End If
-        Dim wc As WebClient = New WebClient()
-        If IsConnectionAvailable() = True Then
-            wc.DownloadFile("https://dl.henryolik.ga/bf2/updater/version.txt", version)
-        End If
-        Dim LastVer As String = My.Computer.FileSystem.ReadAllText(version)
-        If Not MyVer = LastVer Then
-            Dim result As Integer = MessageBox.Show("An update is available! Do you want to download it?", "Update", MessageBoxButtons.YesNo)
-            If result = DialogResult.Yes Then
-                If My.Computer.FileSystem.FileExists(updater) Then
-                    My.Computer.FileSystem.DeleteFile(updater)
-                End If
-                If IsConnectionAvailable() = True Then
-                    wc.DownloadFile("https://dl.henryolik.ga/updater/updater.exe", updater)
-                End If
-                Process.Start(updater, "-bf2 -e:" & """" & Application.ExecutablePath & """")
-                Me.Close()
+    Function gethash(ByVal item As String)
+        Dim i As Integer = -1
+        Dim line As Integer
+        Dim hashlist As String = Path.GetTempPath & "/BF2Updater/hashlist.txt"
+        wc.DownloadFile("https://dl.henryolik.ga/f/bf2hashlist", hashlist)
+        Dim hashlst() As String = IO.File.ReadAllLines(hashlist)
+        For Each j As String In hashlst
+            i = i + 1
+            If j.IndexOf(item) = 0 Then
+                line = i
             End If
+        Next
+        Dim hash As String
+        Dim mystr As String = hashlst(line)
+        Dim cut_at As String = "|"
+        Dim x As Integer = InStr(mystr, cut_at)
+        hash = mystr.Substring(x + cut_at.Length - 1)
+        Return hash
+    End Function
+
+    Private Sub tb_dloc_click(sender As System.Object, e As System.EventArgs) Handles tb_dloc.Click
+        Dim fold As New FolderBrowserDialog
+        fold.ShowNewFolderButton = True
+        If fold.ShowDialog() = DialogResult.OK Then
+            tb_dloc.Text = fold.SelectedPath
+            Dim root As Environment.SpecialFolder = fold.RootFolder
+            dloc = fold.SelectedPath
         End If
     End Sub
-
-    Public Function IsConnectionAvailable() As Boolean
-        Dim objUrl As New System.Uri("https://dl.henryolik.ga/status.txt")
-        Dim objWebReq As System.Net.WebRequest
-        objWebReq = System.Net.WebRequest.Create(objUrl)
-        Dim objResp As System.Net.WebResponse
-        Try
-            objResp = objWebReq.GetResponse
-            objResp.Close()
-            objWebReq = Nothing
-            Return True
-        Catch ex As Exception
-            objWebReq = Nothing
-            Return False
-        End Try
-    End Function
 
     Private Sub tb_dloc_TextChanged(sender As System.Object, e As System.EventArgs) Handles tb_dloc.TextChanged
         Dim dloctxt As String = Path.GetTempPath & "BF2Updater/dloc.txt"
@@ -639,20 +558,5 @@ Public Class main
         End If
         File.WriteAllText(dloctxt, tb_dloc.Text)
         dloc = tb_dloc.Text
-    End Sub
-
-    Private Sub tb_dloc_click(sender As System.Object, e As System.EventArgs) Handles tb_dloc.Click
-        Dim fold As New FolderBrowserDialog
-        fold.ShowNewFolderButton = True
-        If fold.ShowDialog() = DialogResult.OK Then
-            tb_dloc.Text = fold.SelectedPath
-            Dim root As Environment.SpecialFolder = fold.RootFolder
-            dloc = fold.SelectedPath
-        End If
-    End Sub
-
-    Private Sub resetdloc(sender As System.Object, e As System.EventArgs) Handles bu_reset.Click
-        tb_dloc.Text = Path.GetTempPath & "BF2Updater\dl"
-        dloc = Path.GetTempPath & "BF2Updater\dl"
     End Sub
 End Class
