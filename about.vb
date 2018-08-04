@@ -24,7 +24,7 @@ Public Class about
 
     Private Sub about_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
         init()
-        If Directory.Exists(main.dloc) = False OrElse Directory.GetFiles(main.dloc).Count < 1 OrElse main.bu_start.Enabled = False Then
+        If Directory.Exists(main.dloc) = False OrElse Directory.GetFiles(main.dloc).Count < 1 OrElse main.bu_reset.Enabled = False Then
             bu_clean.Enabled = False
         End If
     End Sub

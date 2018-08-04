@@ -394,8 +394,8 @@ Public Class main_old
             Dim folder As String
             regkey = Registry.LocalMachine.OpenSubKey("SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{04858915-9F49-4B2A-AED4-DC49A7DE6A7B}", True)
             folder = regkey.GetValue("InstallLocation")
-            If File.Exists(folder & "/RendDX9-backup.dll") = False Then
-                File.Copy(folder & "/RendDX9.dll", folder & "/RendDX9-backup.dll", True)
+            If File.Exists(folder & "/RendDX9-original.dll") = False Then
+                File.Copy(folder & "/RendDX9.dll", folder & "/RendDX9-original.dll", True)
             End If
             File.Copy(dloc & "/RendDX9.dll", folder & "/RendDX9.dll", True)
             My.Settings.atf = False

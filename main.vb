@@ -4,17 +4,16 @@ Imports System.IO
 Imports System.Security.Cryptography
 Imports System.Net
 Imports System.Threading.Tasks
+Imports Ionic.Zip
 
 'Semi-rewritten, not complete yet
 
 Public Class main
-
     Public dloc As String
     Dim SW As Stopwatch
-    Dim dl As Boolean
-    Dim dlcomp As Boolean
     Dim dlistxt As String = Path.GetTempPath & "/BF2Updater/dlist.txt"
     Dim wc As WebClient = New WebClient
+    Dim bf2ver As Integer
 
     Sub init()
         Dim appname As String = System.Reflection.Assembly.GetExecutingAssembly.GetName().Name
@@ -42,6 +41,7 @@ Public Class main
             tb_dloc.Text = Path.GetTempPath & "BF2Updater\dl"
             dloc = Path.GetTempPath & "BF2Updater\dl"
         End If
+        locate()
         If IsConnectionAvailable() = False Then
             'this is going away soon :)
             MsgBox("Connection isn't available! Please check your internet connection and try again.", MsgBoxStyle.Critical, "Error")
@@ -51,7 +51,6 @@ Public Class main
             msg()
         End If
         check()
-        locate()
     End Sub
 
     Private Sub mi_about_Click(sender As System.Object, e As System.EventArgs) Handles mi_about.Click
@@ -94,7 +93,7 @@ Public Class main
         If getver.IndexOf(2) = 0 Then
             bf2hub = True
         End If
-        Dim bf2ver As Integer = getver.Substring(1)
+        bf2ver = getver.Substring(1)
         If bf2ver >= 110 Then
             la_11.Text = "INSTALLED!"
             la_11.ForeColor = Color.Green
@@ -156,7 +155,7 @@ Public Class main
                 la_bf2hub.Font = New Font("Microsoft Sans Serif", 6)
                 la_bf2hub.Location = New Point(la_bf2hub.Location.X, la_bf2hub.Location.Y + 3)
             End If
-            If bf2hub < 150 And bf2hub = True Then
+            If bf2ver < 150 And bf2hub = True Then
                 la_bf2hub.Text = "NOT INSTALLED, OLD PATCH"
                 la_bf2hub.ForeColor = Color.Red
                 tt_main.SetToolTip(la_bf2hub, "Make sure you have patch 1.50 installed and install and run BF2Hub")
@@ -224,7 +223,7 @@ Public Class main
         If Not MyVer = LastVer Then
             Dim result As Integer = MessageBox.Show("An update is available! Do you want to download it?", "Update", MessageBoxButtons.YesNo)
             If result = DialogResult.Yes Then
-                wc.DownloadFile("https://dl.henryolik.ga/f/updater", updater)
+                wc.DownloadFile("https://dl.henryolik.ga/f/updaterv2", updater)
                 Process.Start(updater, "-bf2 -e:" & """" & Application.ExecutablePath & """")
                 Me.Close()
             End If
@@ -248,26 +247,13 @@ Public Class main
     End Function
 
     Sub download()
-        'this need more care
         Dim down() As String = IO.File.ReadAllLines(Path.GetTempPath & "/BF2Updater/dlist.txt")
         Dim data As String
-        If down.Length <= 0 Then
-            install()
-            Exit Sub
-        End If
-        If down(0) = "" AndAlso down.Length <= 1 Then
+        If down(0) = "" Then
             install()
             Exit Sub
         End If
         data = down(0)
-        If down(0) = "" AndAlso down.Length > 1 Then
-            If down(down.Length - 1) = "" Then
-                install()
-                Exit Sub
-            Else
-                data = down(down.Length)
-            End If
-        End If
         Dim file As String
         Dim ffile As String
         Dim uri As String
@@ -360,6 +346,8 @@ Public Class main
     End Sub
 
     Private Sub download_completed(ByVal sender As Object, ByVal e As System.ComponentModel.AsyncCompletedEventArgs)
+        RemoveHandler wc.DownloadProgressChanged, AddressOf download_change
+        RemoveHandler wc.DownloadFileCompleted, AddressOf download_completed
         If Not e.Error Is Nothing Then
             Dim actualException = e.Error
             While actualException.InnerException IsNot Nothing
@@ -368,6 +356,7 @@ Public Class main
 
             MessageBox.Show("There was an error downloading the file. Error: " & actualException.Message)
         Else
+            wc.Dispose()
             SW.Stop()
             download()
         End If
@@ -380,7 +369,14 @@ Public Class main
             sw.Write(Environment.NewLine)
         End Using
         pb_load.Value = 12
-        If clb_updates.CheckedItems.Contains("Patch 1.1") Then
+        If clb_updates.CheckedItems.Contains("Patch 1.1") AndAlso clb_updates.CheckedItems.Contains("Patch 1.41") = False Then
+            If bf2ver >= 110 Then
+                Dim result As Integer = MessageBox.Show("Patch 1.1 is already installed, do you really want to install it again?", "Warning", MessageBoxButtons.YesNo)
+                If result = DialogResult.No Then
+                    enable()
+                    Exit Sub
+                End If
+            End If
             My.Settings.patch11 = True
             If getfilesha1(dloc & "/bf2patch_1.1.exe") = gethash("Patch 1.1") = False Then
                 dlist("Patch 1.1", "https://dl.henryolik.ga/f/bf2patch11", "bf2patch_1.1.exe")
@@ -388,6 +384,13 @@ Public Class main
         End If
         pb_load.Value = 24
         If clb_updates.CheckedItems.Contains("Patch 1.41") Then
+            If bf2ver >= 141 Then
+                Dim result As Integer = MessageBox.Show("Patch 1.41 is already installed, do you really want to install it again?", "Warning", MessageBoxButtons.YesNo)
+                If result = DialogResult.No Then
+                    enable()
+                    Exit Sub
+                End If
+            End If
             My.Settings.patch141 = True
             If getfilesha1(dloc & "/bf2patch_1.41.exe") = gethash("Patch 1.41") = False Then
                 dlist("Patch 1.41", "https://dl.henryolik.ga/f/bf2patch141", "bf2patch_1.41.exe")
@@ -395,6 +398,17 @@ Public Class main
         End If
         pb_load.Value = 36
         If clb_updates.CheckedItems.Contains("Patch 1.50") Then
+            If bf2ver >= 150 Then
+                Dim result As Integer = MessageBox.Show("Patch 1.50 is already installed, do you really want to install it again?", "Warning", MessageBoxButtons.YesNo)
+                If result = DialogResult.No Then
+                    enable()
+                    Exit Sub
+                End If
+            ElseIf bf2ver < 141 AndAlso My.Settings.patch141 = False Then
+                MsgBox("You need to install patch 1.41 first in order to install patch 1.50.")
+                enable()
+                Exit Sub
+            End If
             My.Settings.patch150 = True
             If getfilesha1(dloc & "/bf2patch_1.50.exe") = gethash("Patch 1.50") = False Then
                 dlist("Patch 1.50", "https://dl.henryolik.ga/f/bf2patch150", "bf2patch_1.50.exe")
@@ -402,6 +416,11 @@ Public Class main
         End If
         pb_load.Value = 48
         If clb_updates.CheckedItems.Contains("BF2Hub") Then
+            If bf2ver < 150 AndAlso My.Settings.patch150 = False Then
+                MsgBox("You need to install patch 1.50 first in order to install BF2Hub.")
+                enable()
+                Exit Sub
+            End If
             My.Settings.bf2hub = True
             If getfilesha1(dloc & "/bf2hub_setup.exe") = gethash("BF2Hub") = False Then
                 dlist("BF2Hub", "https://dl.henryolik.ga/f/bf2hub", "bf2hub_setup.exe")
@@ -409,6 +428,11 @@ Public Class main
         End If
         pb_load.Value = 60
         If clb_updates.CheckedItems.Contains("Alt+Tab Fix") Then
+            If bf2ver < 150 AndAlso My.Settings.patch150 = False Then
+                MsgBox("You need to install patch 1.50 first in order to install Alt+Tab fix.")
+                enable()
+                Exit Sub
+            End If
             My.Settings.atf = True
             If getfilesha1(dloc & "/RendDX9.dll") = gethash("Alt+Tab Fix") = False Then
                 dlist("Alt+Tab Fix", "https://dl.henryolik.ga/f/bf2alttabfix", "RendDX9.dll")
@@ -468,6 +492,11 @@ Public Class main
         Return hex_value.ToLower
     End Function
 
+    Private Sub resetdloc(sender As System.Object, e As System.EventArgs) Handles bu_reset.Click
+        tb_dloc.Text = Path.GetTempPath & "BF2Updater\dl"
+        dloc = Path.GetTempPath & "BF2Updater\dl"
+    End Sub
+
     Private Sub bu_start_Click(sender As System.Object, e As System.EventArgs) Handles bu_start.Click
         disable()
         If clb_updates.CheckedItems.Count = 0 Then
@@ -476,6 +505,8 @@ Public Class main
         Else
             If MsgBox("Do you want to install checked updates?", MsgBoxStyle.YesNo, "Install") = MsgBoxResult.Yes Then
                 predl()
+            Else
+                enable()
             End If
         End If
     End Sub
@@ -488,7 +519,7 @@ Public Class main
         Loop
         enable()
         MsgBox("Download complete!")
-        'soon :)
+        'something big in progress :)
     End Sub
 
     Public Sub enable()
