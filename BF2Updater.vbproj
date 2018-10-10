@@ -77,31 +77,19 @@
     <DelaySign>false</DelaySign>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Ionic.Zip">
-      <HintPath>..\..\..\..\..\..\Desktop\Ionic.Zip.dll</HintPath>
-    </Reference>
-    <Reference Include="MySql.Data">
-      <HintPath>..\..\..\..\..\..\Desktop\MySql.Data.dll</HintPath>
-    </Reference>
-    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Import Include="Microsoft.VisualBasic" />
     <Import Include="System" />
     <Import Include="System.Collections" />
     <Import Include="System.Collections.Generic" />
-    <Import Include="System.Data" />
     <Import Include="System.Drawing" />
     <Import Include="System.Diagnostics" />
     <Import Include="System.Windows.Forms" />
@@ -113,13 +101,6 @@
       <DependentUpon>about.vb</DependentUpon>
     </Compile>
     <Compile Include="about.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="main_old.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="main_old.Designer.vb">
-      <DependentUpon>main_old.vb</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
@@ -143,16 +124,16 @@
     <Compile Include="main.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="wait.Designer.vb">
+      <DependentUpon>wait.vb</DependentUpon>
+    </Compile>
+    <Compile Include="wait.vb">
+      <SubType>Form</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="about.resx">
       <DependentUpon>about.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="main_old.en.resx">
-      <DependentUpon>main_old.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="main_old.resx">
-      <DependentUpon>main_old.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
@@ -163,10 +144,15 @@
     <EmbeddedResource Include="main.resx">
       <DependentUpon>main.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="wait.resx">
+      <DependentUpon>wait.vb</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="My Project\app.manifest" />
+    <None Include="My Project\app.manifest">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>

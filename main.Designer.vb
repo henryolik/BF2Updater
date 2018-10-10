@@ -48,6 +48,7 @@ Partial Class main
         Me.ms_main = New System.Windows.Forms.MenuStrip()
         Me.mi_about = New System.Windows.Forms.ToolStripMenuItem()
         Me.tt_main = New System.Windows.Forms.ToolTip(Me.components)
+        Me.Label1 = New System.Windows.Forms.Label()
         Me.ms_main.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -280,11 +281,22 @@ Partial Class main
         Me.mi_about.Size = New System.Drawing.Size(52, 20)
         Me.mi_about.Text = "About"
         '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.BackColor = System.Drawing.Color.Transparent
+        Me.Label1.Location = New System.Drawing.Point(538, 275)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(35, 13)
+        Me.Label1.TabIndex = 45
+        Me.Label1.Text = "BETA"
+        '
         'main
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(571, 289)
+        Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.bu_reset)
         Me.Controls.Add(Me.la_dloc)
         Me.Controls.Add(Me.tb_dloc)
@@ -341,4 +353,5 @@ Partial Class main
     Friend WithEvents ms_main As System.Windows.Forms.MenuStrip
     Friend WithEvents mi_about As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents tt_main As System.Windows.Forms.ToolTip
+    Friend WithEvents Label1 As System.Windows.Forms.Label
 End Class

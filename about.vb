@@ -5,7 +5,7 @@ Public Class about
         Dim appname As String = System.Reflection.Assembly.GetExecutingAssembly.GetName().Name
         Dim appver As String = My.Application.Info.Version.ToString
         Dim app As String = appname & " v" & appver
-        Me.Text = app
+        Me.Text = "About | " & app
         la_ver.Text = app
     End Sub
 

@@ -4,14 +4,14 @@ Imports System.IO
 Imports System.Security.Cryptography
 Imports System.Net
 Imports System.Threading.Tasks
-Imports Ionic.Zip
-
-'Semi-rewritten, not complete yet
+Imports System.Environment
 
 Public Class main
     Public dloc As String
     Dim SW As Stopwatch
-    Dim dlistxt As String = Path.GetTempPath & "/BF2Updater/dlist.txt"
+    Dim AppData As String = GetFolderPath(SpecialFolder.ApplicationData) & "\henryolik\BF2Updater\"
+    Dim TempFolder As String = Path.GetTempPath & "henryolik\BF2Updater\"
+    Dim dlistxt As String = TempFolder & "dlist.txt"
     Dim wc As WebClient = New WebClient
     Dim bf2ver As Integer
 
@@ -22,35 +22,59 @@ Public Class main
         Me.Text = app
     End Sub
 
-    Private Sub main_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
-        init()
-        Dim osVer As Version = Environment.OSVersion.Version
-        If osVer.Major < 6 Then
-            MsgBox("Your OS isn't supported. But don't worry. You can download all files at https://dl.henryolik.ga/bf2", MsgBoxStyle.Critical, "OS isn't supported")
-            Me.Close()
-        End If
-        If Directory.Exists(Path.GetTempPath & "BF2Updater") = True Then
-            If File.Exists(Path.GetTempPath & "BF2Updater\dloc.txt") = True AndAlso File.ReadAllText(Path.GetTempPath & "BF2Updater\dloc.txt") = Nothing = False Then
-                tb_dloc.Text = File.ReadAllText(Path.GetTempPath & "BF2Updater\dloc.txt")
-                dloc = File.ReadAllText(Path.GetTempPath & "BF2Updater\dloc.txt")
-            Else
-                tb_dloc.Text = Path.GetTempPath & "BF2Updater\dl"
-                dloc = Path.GetTempPath & "BF2Updater/dl"
+    Sub migrate()
+            Dim olddloc As String = Path.GetTempPath & "BF2Updater\dloc.txt"
+            If File.Exists(olddloc) = True Then
+                If File.ReadAllText(olddloc).Length > 0 Then
+                    waitwin(True, "Getting files ready for new version...")
+                    My.Computer.FileSystem.MoveFile(olddloc, AppData & "dloc.txt")
+                End If
             End If
-        Else
-            tb_dloc.Text = Path.GetTempPath & "BF2Updater\dl"
-            dloc = Path.GetTempPath & "BF2Updater\dl"
-        End If
-        locate()
-        If IsConnectionAvailable() = False Then
-            'this is going away soon :)
-            MsgBox("Connection isn't available! Please check your internet connection and try again.", MsgBoxStyle.Critical, "Error")
-            Me.Close()
-        Else
-            CheckForUpdates()
-            msg()
-        End If
-        check()
+            If Directory.Exists(Path.GetTempPath & "BF2Updater") = True Then
+                If Directory.GetFiles(Path.GetTempPath & "BF2Updater").Count = 0 = False Then
+                    waitwin(True, "Getting files ready for new version...")
+                    My.Computer.FileSystem.MoveDirectory(Path.GetTempPath & "BF2Updater", TempFolder, False)
+                End If
+            End If
+    End Sub
+
+    Private Sub main_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
+        Try
+            init()
+            migrate()
+            Dim osVer As Version = Environment.OSVersion.Version
+            If osVer.Major < 6 Then
+                MsgBox("Your OS isn't supported. But don't worry. You can download all files at https://dl.henryolik.eu/bf2", MsgBoxStyle.Critical, "OS isn't supported")
+                Me.Close()
+            End If
+            If Directory.Exists(AppData) = True Then
+                If File.Exists(AppData & "dloc.txt") = True AndAlso File.ReadAllText(AppData & "dloc.txt") = Nothing = False Then
+                    tb_dloc.Text = File.ReadAllText(AppData & "dloc.txt")
+                    dloc = File.ReadAllText(AppData & "dloc.txt")
+                Else
+                    tb_dloc.Text = TempFolder & "dl"
+                    dloc = TempFolder & "dl"
+                End If
+            Else
+                tb_dloc.Text = TempFolder & "dl"
+                dloc = TempFolder & "dl"
+            End If
+            If Directory.Exists(TempFolder) = False Then
+                Directory.CreateDirectory(TempFolder)
+            End If
+            locate()
+            If IsConnectionAvailable() = False Then
+                'this is going away soon :) (i hope)
+                MsgBox("Connection isn't available! Please check your internet connection and try again.", MsgBoxStyle.Critical, "Error")
+                Me.Close()
+            Else
+                CheckForUpdates()
+                msg()
+            End If
+            check()
+        Catch ex As Exception
+            MsgBox("Crap, that was not expexted..." & Environment.NewLine & ex.ToString)
+        End Try
     End Sub
 
     Private Sub mi_about_Click(sender As System.Object, e As System.EventArgs) Handles mi_about.Click
@@ -203,8 +227,8 @@ Public Class main
             End If
         End If
         If Not os = Nothing Then
-            Dim msg As String = Application.StartupPath & "/msg.txt"
-            wc.DownloadFile(New Uri("https://dl.henryolik.ga/bf2/updater/msgs/" & MyVer & "/" & os & ".txt"), msg)
+            Dim msg As String = TempFolder & "/msg.txt"
+            wc.DownloadFile(New Uri("https://dl.henryolik.eu/bf2/updater/msgs/" & MyVer & "/" & os & ".txt"), msg)
             If Not My.Computer.FileSystem.ReadAllText(msg) = "" Then
                 MsgBox(My.Computer.FileSystem.ReadAllText(msg), MsgBoxStyle.Information, "Message")
             End If
@@ -212,18 +236,18 @@ Public Class main
     End Sub
 
     Public Sub CheckForUpdates()
-        If Directory.Exists(IO.Path.GetTempPath & "BF2Updater") = False Then
-            Directory.CreateDirectory(IO.Path.GetTempPath & "BF2Updater")
+        If Directory.Exists(TempFolder) = False Then
+            Directory.CreateDirectory(TempFolder)
         End If
-        Dim version As String = IO.Path.GetTempPath & "BF2Updater/version.txt"
-        Dim updater As String = IO.Path.GetTempPath & "BF2Updater/updater.exe"
+        Dim version As String = TempFolder & "version.txt"
+        Dim updater As String = TempFolder & "updater.exe"
         Dim MyVer As String = My.Application.Info.Version.ToString
-        wc.DownloadFile("https://dl.henryolik.ga/f/bf2updaterver", version)
+        wc.DownloadFile("https://dl.henryolik.eu/f/bf2updaterver", version)
         Dim LastVer As String = My.Computer.FileSystem.ReadAllText(version)
         If Not MyVer = LastVer Then
             Dim result As Integer = MessageBox.Show("An update is available! Do you want to download it?", "Update", MessageBoxButtons.YesNo)
             If result = DialogResult.Yes Then
-                wc.DownloadFile("https://dl.henryolik.ga/f/updaterv2", updater)
+                wc.DownloadFile("https://dl.henryolik.eu/f/updater", updater)
                 Process.Start(updater, "-bf2 -e:" & """" & Application.ExecutablePath & """")
                 Me.Close()
             End If
@@ -231,7 +255,7 @@ Public Class main
     End Sub
 
     Public Function IsConnectionAvailable() As Boolean
-        Dim objUrl As New System.Uri("https://dl.henryolik.ga/f/status")
+        Dim objUrl As New System.Uri("https://dl.henryolik.eu/f/status")
         Dim objWebReq As System.Net.WebRequest
         objWebReq = System.Net.WebRequest.Create(objUrl)
         Dim objResp As System.Net.WebResponse
@@ -247,7 +271,7 @@ Public Class main
     End Function
 
     Sub download()
-        Dim down() As String = IO.File.ReadAllLines(Path.GetTempPath & "/BF2Updater/dlist.txt")
+        Dim down() As String = IO.File.ReadAllLines(TempFolder & "dlist.txt")
         Dim data As String
         If down(0) = "" Then
             install()
@@ -269,7 +293,7 @@ Public Class main
             My.Computer.FileSystem.CreateDirectory(dloc)
         End If
         wc.DownloadFileAsync(New Uri(uri), dloc & "/" & ffile)
-        rml(Path.GetTempPath & "/BF2Updater/dlist.txt", 1)
+        rml(TempFolder & "dlist.txt", 1)
     End Sub
 
     Public Sub rml(ByVal path As String, ByVal ln As Integer)
@@ -363,7 +387,7 @@ Public Class main
     End Sub
 
     Sub predl()
-        la_dl.Text = "Checking for files, please wait..."
+        la_dl.Text = "Checking files, please wait..."
         IO.File.Create(dlistxt).Close()
         Using sw As StreamWriter = New StreamWriter(dlistxt)
             sw.Write(Environment.NewLine)
@@ -379,7 +403,7 @@ Public Class main
             End If
             My.Settings.patch11 = True
             If getfilesha1(dloc & "/bf2patch_1.1.exe") = gethash("Patch 1.1") = False Then
-                dlist("Patch 1.1", "https://dl.henryolik.ga/f/bf2patch11", "bf2patch_1.1.exe")
+                dlist("Patch 1.1", "https://dl.henryolik.eu/f/bf2patch11", "bf2patch_1.1.exe")
             End If
         End If
         pb_load.Value = 24
@@ -393,7 +417,7 @@ Public Class main
             End If
             My.Settings.patch141 = True
             If getfilesha1(dloc & "/bf2patch_1.41.exe") = gethash("Patch 1.41") = False Then
-                dlist("Patch 1.41", "https://dl.henryolik.ga/f/bf2patch141", "bf2patch_1.41.exe")
+                dlist("Patch 1.41", "https://dl.henryolik.eu/f/bf2patch141", "bf2patch_1.41.exe")
             End If
         End If
         pb_load.Value = 36
@@ -411,7 +435,7 @@ Public Class main
             End If
             My.Settings.patch150 = True
             If getfilesha1(dloc & "/bf2patch_1.50.exe") = gethash("Patch 1.50") = False Then
-                dlist("Patch 1.50", "https://dl.henryolik.ga/f/bf2patch150", "bf2patch_1.50.exe")
+                dlist("Patch 1.50", "https://dl.henryolik.eu/f/bf2patch150", "bf2patch_1.50.exe")
             End If
         End If
         pb_load.Value = 48
@@ -423,7 +447,7 @@ Public Class main
             End If
             My.Settings.bf2hub = True
             If getfilesha1(dloc & "/bf2hub_setup.exe") = gethash("BF2Hub") = False Then
-                dlist("BF2Hub", "https://dl.henryolik.ga/f/bf2hub", "bf2hub_setup.exe")
+                dlist("BF2Hub", "https://dl.henryolik.eu/f/bf2hub", "bf2hub_setup.exe")
             End If
         End If
         pb_load.Value = 60
@@ -435,21 +459,21 @@ Public Class main
             End If
             My.Settings.atf = True
             If getfilesha1(dloc & "/RendDX9.dll") = gethash("Alt+Tab Fix") = False Then
-                dlist("Alt+Tab Fix", "https://dl.henryolik.ga/f/bf2alttabfix", "RendDX9.dll")
+                dlist("Alt+Tab Fix", "https://dl.henryolik.eu/f/bf2alttabfix", "RendDX9.dll")
             End If
         End If
         pb_load.Value = 72
         If clb_updates.CheckedItems.Contains("DirectX 9.0c") Then
             My.Settings.dx = True
             If getfilesha1(dloc & "/dxsetup.exe") = gethash("DirectX 9.0c") = False Then
-                dlist("DirectX 9.0c", "https://dl.henryolik.ga/f/dx90c", "dxsetup.exe")
+                dlist("DirectX 9.0c", "https://dl.henryolik.eu/f/dx90c", "dxsetup.exe")
             End If
         End If
         pb_load.Value = 84
         If clb_updates.CheckedItems.Contains("PunkBuster") Then
             My.Settings.pb = True
             If getfilesha1(dloc & "/pbsvc.exe") = gethash("PunkBuster") = False Then
-                dlist("PunkBuster", "https://dl.henryolik.ga/f/punkbuster", "pbsvc.exe")
+                dlist("PunkBuster", "https://dl.henryolik.eu/f/punkbuster", "pbsvc.exe")
             End If
         End If
         pb_load.Value = 100
@@ -493,8 +517,8 @@ Public Class main
     End Function
 
     Private Sub resetdloc(sender As System.Object, e As System.EventArgs) Handles bu_reset.Click
-        tb_dloc.Text = Path.GetTempPath & "BF2Updater\dl"
-        dloc = Path.GetTempPath & "BF2Updater\dl"
+        tb_dloc.Text = TempFolder & "dl"
+        dloc = TempFolder & "dl"
     End Sub
 
     Private Sub bu_start_Click(sender As System.Object, e As System.EventArgs) Handles bu_start.Click
@@ -517,9 +541,81 @@ Public Class main
             i = i + 1
             clb_updates.SetItemChecked(i, False)
         Loop
+        la_dl.Text = "Installing..."
+        If My.Settings.patch11 = True Or My.Settings.patch141 = True Or My.Settings.patch150 = True Or My.Settings.bf2hub = True Or My.Settings.dx = True Or My.Settings.pb = True Then
+            MsgBox("Updates will now install. If you'll be prompted to restart your PC, choose restart later. It'll be better for everyone :)", MsgBoxStyle.Exclamation, "Warning")
+        End If
+        If My.Settings.patch11 = True Then
+            la_dl.Text = "Patch 1.1"
+            pb_load.Value = 50
+            waitwin(True, "Configuring patch...")
+            Process.Start(dloc & "/bf2patch_1.1.exe").WaitForExit(3600000)
+            waitwin(False)
+            pb_load.Value = 100
+            My.Settings.patch11 = False
+        End If
+        If My.Settings.patch141 = True Then
+            la_dl.Text = "Patch 1.41"
+            pb_load.Value = 50
+            waitwin(True, "Configuring patch...")
+            Process.Start(dloc & "/bf2patch_1.41.exe").WaitForExit(3600000)
+            waitwin(False)
+            My.Settings.patch141 = False
+            pb_load.Value = 100
+        End If
+        If My.Settings.patch150 = True Then
+            la_dl.Text = "Patch 1.50"
+            pb_load.Value = 50
+            waitwin(True, "Configuring patch...")
+            Process.Start(dloc & "/bf2patch_1.50.exe").WaitForExit(3600000)
+            waitwin(False)
+            My.Settings.patch150 = False
+            pb_load.Value = 100
+        End If
+        If My.Settings.bf2hub = True Then
+            la_dl.Text = "BF2Hub"
+            pb_load.Value = 50
+            waitwin(True, "Configuring BF2Hub...")
+            Process.Start(dloc & "/bf2hub_setup.exe").WaitForExit(3600000)
+            waitwin(False)
+            My.Settings.bf2hub = False
+            pb_load.Value = 100
+        End If
+        If My.Settings.atf = True Then
+            la_dl.Text = "Alt+Tab Fix"
+            pb_load.Value = 50
+            Dim regkey As RegistryKey
+            Dim folder As String
+            regkey = Registry.LocalMachine.OpenSubKey("SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{04858915-9F49-4B2A-AED4-DC49A7DE6A7B}", True)
+            folder = regkey.GetValue("InstallLocation")
+            If File.Exists(folder & "/RendDX9-original.dll") = False Then
+                File.Copy(folder & "/RendDX9.dll", folder & "/RendDX9-original.dll", True)
+            End If
+            File.Copy(dloc & "/RendDX9.dll", folder & "/RendDX9.dll", True)
+            My.Settings.atf = False
+            pb_load.Value = 100
+        End If
+        If My.Settings.dx = True Then
+            la_dl.Text = "DirectX 9.0c"
+            pb_load.Value = 50
+            waitwin(True, "Configuring DirectX...")
+            Process.Start(dloc & "/dxsetup.exe").WaitForExit(3600000)
+            waitwin(False)
+            My.Settings.dx = False
+            pb_load.Value = 100
+        End If
+        If My.Settings.pb = True Then
+            la_dl.Text = "PunkBuster"
+            pb_load.Value = 50
+            waitwin(True, "Configuring PunkBuster...")
+            Process.Start(dloc & "/pbsvc.exe").WaitForExit(3600000)
+            waitwin(False)
+            My.Settings.pb = False
+            pb_load.Value = 100
+        End If
         enable()
-        MsgBox("Download complete!")
-        'something big in progress :)
+        check()
+        MsgBox("Done!")
     End Sub
 
     Public Sub enable()
@@ -551,8 +647,8 @@ Public Class main
     Function gethash(ByVal item As String)
         Dim i As Integer = -1
         Dim line As Integer
-        Dim hashlist As String = Path.GetTempPath & "/BF2Updater/hashlist.txt"
-        wc.DownloadFile("https://dl.henryolik.ga/f/bf2hashlist", hashlist)
+        Dim hashlist As String = TempFolder & "hashlist.txt"
+        wc.DownloadFile("https://dl.henryolik.eu/f/bf2hashlist", hashlist)
         Dim hashlst() As String = IO.File.ReadAllLines(hashlist)
         For Each j As String In hashlst
             i = i + 1
@@ -579,9 +675,9 @@ Public Class main
     End Sub
 
     Private Sub tb_dloc_TextChanged(sender As System.Object, e As System.EventArgs) Handles tb_dloc.TextChanged
-        Dim dloctxt As String = Path.GetTempPath & "BF2Updater/dloc.txt"
-        If Directory.Exists(Path.GetTempPath & "BF2Updater") = False Then
-            Directory.CreateDirectory(Path.GetTempPath & "BF2Updater")
+        Dim dloctxt As String = AppData & "dloc.txt"
+        If Directory.Exists(AppData) = False Then
+            Directory.CreateDirectory(AppData)
         Else
             If File.Exists(dloctxt) = False Then
                 File.Create(dloctxt).Dispose()
@@ -589,5 +685,14 @@ Public Class main
         End If
         File.WriteAllText(dloctxt, tb_dloc.Text)
         dloc = tb_dloc.Text
+    End Sub
+
+    Sub waitwin(ByVal show As Boolean, Optional ByVal text As String = "Please wait...")
+        wait.Label1.Text = text
+        If show = True Then
+            wait.Show()
+        Else
+            wait.Close()
+        End If
     End Sub
 End Class

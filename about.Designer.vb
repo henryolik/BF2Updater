@@ -35,9 +35,9 @@ Partial Class about
         Me.la_ver.Font = New System.Drawing.Font("Microsoft Sans Serif", 24.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(238, Byte))
         Me.la_ver.Location = New System.Drawing.Point(0, 9)
         Me.la_ver.Name = "la_ver"
-        Me.la_ver.Size = New System.Drawing.Size(311, 37)
+        Me.la_ver.Size = New System.Drawing.Size(190, 37)
         Me.la_ver.TabIndex = 0
-        Me.la_ver.Text = "BF2Updater v1.0.5.2"
+        Me.la_ver.Text = "BF2Updater"
         '
         'la_c
         '
@@ -55,7 +55,7 @@ Partial Class about
         Me.la_www.Name = "la_www"
         Me.la_www.Size = New System.Drawing.Size(118, 13)
         Me.la_www.TabIndex = 2
-        Me.la_www.Text = "https://bf2.henryolik.ga"
+        Me.la_www.Text = "https://bf2.henryolik.eu"
         '
         'bu_clean
         '
