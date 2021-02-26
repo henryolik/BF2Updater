@@ -24,18 +24,18 @@ Public Class main
 
     Sub migrate()
             Dim olddloc As String = Path.GetTempPath & "BF2Updater\dloc.txt"
-            If File.Exists(olddloc) = True Then
-                If File.ReadAllText(olddloc).Length > 0 Then
-                    waitwin(True, "Getting files ready for new version...")
-                    My.Computer.FileSystem.MoveFile(olddloc, AppData & "dloc.txt")
-                End If
+        If File.Exists(olddloc) = True And File.Exists(AppData & "dloc.txt") = False Then 'TEMPORARY FIX
+            If File.ReadAllText(olddloc).Length > 0 Then
+                waitwin(True, "Getting files ready for new version...")
+                My.Computer.FileSystem.MoveFile(olddloc, AppData & "dloc.txt")
             End If
-            If Directory.Exists(Path.GetTempPath & "BF2Updater") = True Then
-                If Directory.GetFiles(Path.GetTempPath & "BF2Updater").Count = 0 = False Then
-                    waitwin(True, "Getting files ready for new version...")
-                    My.Computer.FileSystem.MoveDirectory(Path.GetTempPath & "BF2Updater", TempFolder, False)
-                End If
+        End If
+        If Directory.Exists(Path.GetTempPath & "BF2Updater") = True And Directory.Exists(TempFolder) = False Then 'TEMPORARY FIX
+            If Directory.GetFiles(Path.GetTempPath & "BF2Updater").Count > 0 Then
+                waitwin(True, "Getting files ready for new version...")
+                My.Computer.FileSystem.MoveDirectory(Path.GetTempPath & "BF2Updater", TempFolder, False)
             End If
+        End If
     End Sub
 
     Private Sub main_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
@@ -44,7 +44,7 @@ Public Class main
             migrate()
             Dim osVer As Version = Environment.OSVersion.Version
             If osVer.Major < 6 Then
-                MsgBox("Your OS isn't supported. But don't worry. You can download all files at https://dl.henryolik.eu/bf2", MsgBoxStyle.Critical, "OS isn't supported")
+                MsgBox("Your OS isn't supported. But don't worry. You can download all files at https://dl.hnr.li/bf2", MsgBoxStyle.Critical, "OS isn't supported")
                 Me.Close()
             End If
             If Directory.Exists(AppData) = True Then
@@ -228,7 +228,7 @@ Public Class main
         End If
         If Not os = Nothing Then
             Dim msg As String = TempFolder & "/msg.txt"
-            wc.DownloadFile(New Uri("https://dl.henryolik.eu/bf2/updater/msgs/" & MyVer & "/" & os & ".txt"), msg)
+            wc.DownloadFile(New Uri("https://dl.henryolik.net/bf2/updater/msgs/" & MyVer & "/" & os & ".txt"), msg)
             If Not My.Computer.FileSystem.ReadAllText(msg) = "" Then
                 MsgBox(My.Computer.FileSystem.ReadAllText(msg), MsgBoxStyle.Information, "Message")
             End If
@@ -242,12 +242,12 @@ Public Class main
         Dim version As String = TempFolder & "version.txt"
         Dim updater As String = TempFolder & "updater.exe"
         Dim MyVer As String = My.Application.Info.Version.ToString
-        wc.DownloadFile("https://dl.henryolik.eu/f/bf2updaterver", version)
+        wc.DownloadFile("https://dl.hnr.li/bf2updaterver", version)
         Dim LastVer As String = My.Computer.FileSystem.ReadAllText(version)
         If Not MyVer = LastVer Then
             Dim result As Integer = MessageBox.Show("An update is available! Do you want to download it?", "Update", MessageBoxButtons.YesNo)
             If result = DialogResult.Yes Then
-                wc.DownloadFile("https://dl.henryolik.eu/f/updater", updater)
+                wc.DownloadFile("https://dl.hnr.li/updater", updater)
                 Process.Start(updater, "-bf2 -e:" & """" & Application.ExecutablePath & """")
                 Me.Close()
             End If
@@ -255,7 +255,7 @@ Public Class main
     End Sub
 
     Public Function IsConnectionAvailable() As Boolean
-        Dim objUrl As New System.Uri("https://dl.henryolik.eu/f/status")
+        Dim objUrl As New System.Uri("https://dl.hnr.li/status")
         Dim objWebReq As System.Net.WebRequest
         objWebReq = System.Net.WebRequest.Create(objUrl)
         Dim objResp As System.Net.WebResponse
@@ -403,7 +403,7 @@ Public Class main
             End If
             My.Settings.patch11 = True
             If getfilesha1(dloc & "/bf2patch_1.1.exe") = gethash("Patch 1.1") = False Then
-                dlist("Patch 1.1", "https://dl.henryolik.eu/f/bf2patch11", "bf2patch_1.1.exe")
+                dlist("Patch 1.1", "https://dl.hnr.li/bf2patch11", "bf2patch_1.1.exe")
             End If
         End If
         pb_load.Value = 24
@@ -417,7 +417,7 @@ Public Class main
             End If
             My.Settings.patch141 = True
             If getfilesha1(dloc & "/bf2patch_1.41.exe") = gethash("Patch 1.41") = False Then
-                dlist("Patch 1.41", "https://dl.henryolik.eu/f/bf2patch141", "bf2patch_1.41.exe")
+                dlist("Patch 1.41", "https://dl.hnr.li/bf2patch141", "bf2patch_1.41.exe")
             End If
         End If
         pb_load.Value = 36
@@ -435,7 +435,7 @@ Public Class main
             End If
             My.Settings.patch150 = True
             If getfilesha1(dloc & "/bf2patch_1.50.exe") = gethash("Patch 1.50") = False Then
-                dlist("Patch 1.50", "https://dl.henryolik.eu/f/bf2patch150", "bf2patch_1.50.exe")
+                dlist("Patch 1.50", "https://dl.hnr.li/bf2patch150", "bf2patch_1.50.exe")
             End If
         End If
         pb_load.Value = 48
@@ -447,7 +447,7 @@ Public Class main
             End If
             My.Settings.bf2hub = True
             If getfilesha1(dloc & "/bf2hub_setup.exe") = gethash("BF2Hub") = False Then
-                dlist("BF2Hub", "https://dl.henryolik.eu/f/bf2hub", "bf2hub_setup.exe")
+                dlist("BF2Hub", "https://dl.hnr.li/bf2hub", "bf2hub_setup.exe")
             End If
         End If
         pb_load.Value = 60
@@ -459,21 +459,21 @@ Public Class main
             End If
             My.Settings.atf = True
             If getfilesha1(dloc & "/RendDX9.dll") = gethash("Alt+Tab Fix") = False Then
-                dlist("Alt+Tab Fix", "https://dl.henryolik.eu/f/bf2alttabfix", "RendDX9.dll")
+                dlist("Alt+Tab Fix", "https://dl.hnr.li/bf2alttabfix", "RendDX9.dll")
             End If
         End If
         pb_load.Value = 72
         If clb_updates.CheckedItems.Contains("DirectX 9.0c") Then
             My.Settings.dx = True
             If getfilesha1(dloc & "/dxsetup.exe") = gethash("DirectX 9.0c") = False Then
-                dlist("DirectX 9.0c", "https://dl.henryolik.eu/f/dx90c", "dxsetup.exe")
+                dlist("DirectX 9.0c", "https://dl.hnr.li/dx90c", "dxsetup.exe")
             End If
         End If
         pb_load.Value = 84
         If clb_updates.CheckedItems.Contains("PunkBuster") Then
             My.Settings.pb = True
             If getfilesha1(dloc & "/pbsvc.exe") = gethash("PunkBuster") = False Then
-                dlist("PunkBuster", "https://dl.henryolik.eu/f/punkbuster", "pbsvc.exe")
+                dlist("PunkBuster", "https://dl.hnr.li/punkbuster", "pbsvc.exe")
             End If
         End If
         pb_load.Value = 100
@@ -648,7 +648,7 @@ Public Class main
         Dim i As Integer = -1
         Dim line As Integer
         Dim hashlist As String = TempFolder & "hashlist.txt"
-        wc.DownloadFile("https://dl.henryolik.eu/f/bf2hashlist", hashlist)
+        wc.DownloadFile("https://dl.hnr.li/bf2hashlist", hashlist)
         Dim hashlst() As String = IO.File.ReadAllLines(hashlist)
         For Each j As String In hashlst
             i = i + 1
